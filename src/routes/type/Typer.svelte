@@ -1,70 +1,67 @@
 <script lang="ts">
-  import { clickoutside } from "@svelte-put/clickoutside";
-  export let words = ["type", "this", "fast", "today"];
-  let string = words.join(" ");
-  let curr = 0;
-  let correct = "";
-  console.log(string);
-  let focused = true;
-  function handleFocus() {
-    focused = true;
-  }
+  import { onMount } from "svelte";
 
-  function handleBlur() {
-    focused = false;
-  }
+  export let string: string;
+  export let focused: boolean;
+  let curr = 0;
   function handleKeydown(e: KeyboardEvent) {
     const key = e.key;
-    if (focused) {
-      if (key === string[0]) {
-        correct += curr;
+    let inserting = false;
+
+    if (key === "Backspace") {
+      strObjArr[curr - 1].correct = null;
+      curr--;
+      return;
+    }
+
+    if (/^[a-zA-Z0-9,.\-\s'";:]$/.test(key)) {
+      inserting = true;
+    }
+
+    if (focused && inserting) {
+      if (key === string[curr]) {
+        console.log(key);
+        strObjArr[curr].correct = true;
         curr++;
-        string = string.slice(1);
+      } else {
+        strObjArr[curr].correct = false;
+        curr++;
       }
     }
     //
   }
-  $: console.log(string);
+  type LetterObj = {
+    value: string;
+    correct: null | Boolean;
+    time: null | number;
+  };
+  let strObjArr: LetterObj[] = [];
+  onMount(() => {
+    strObjArr = string
+      .split("")
+      .map((l) => ({ value: l, correct: null, time: null }));
+    console.log(strObjArr);
+  });
 </script>
 
 <svelte:window on:keydown|preventDefault={handleKeydown} />
 
-<button
-  class={focused ? "" : "blur"}
-  use:clickoutside
-  on:blur={handleBlur}
-  on:focus={handleFocus}
-  on:click={handleFocus}
-  on:clickoutside={handleBlur}
->
-  <div class="text-area">
-    {#each words as word}
-      <div class="word">
-        {#each word.split("") as letter}
-          <span class="letter">
-            {letter}
-          </span>
-        {/each}
-      </div>
-    {/each}
-  </div>
-</button>
+<div class="text-area">
+  {#each strObjArr as letter}<span
+      class="letter {letter.correct ? 'correct' : ''} {letter.correct === false
+        ? 'wrong'
+        : ''}">{letter.value}</span
+    >{/each}
+</div>
 
 <style>
-  button {
-    all: unset;
-  }
-
-  .type-area {
-    position: relative;
-  }
-
-  .blur {
-    filter: blur(3px);
-    -webkit-filter: blur(3px);
-  }
-
   .word {
     display: inline;
+  }
+  .correct {
+    color: green;
+  }
+  .wrong {
+    color: red;
   }
 </style>
