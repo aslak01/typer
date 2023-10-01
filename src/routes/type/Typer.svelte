@@ -8,6 +8,10 @@
     const key = e.key;
     let inserting = false;
 
+    if (curr >= string.length) {
+      return;
+    }
+
     if (key === "Backspace") {
       strObjArr[curr - 1].correct = null;
       curr--;
@@ -55,9 +59,6 @@
 </div>
 
 <style>
-  .word {
-    display: inline;
-  }
   .correct {
     color: green;
   }
