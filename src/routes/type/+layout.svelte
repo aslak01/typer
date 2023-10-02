@@ -5,7 +5,6 @@
 <style>
   @import "open-props/postcss/style";
   .container {
-    height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;

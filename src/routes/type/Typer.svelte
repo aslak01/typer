@@ -44,25 +44,30 @@
     strObjArr = string
       .split("")
       .map((l) => ({ value: l, correct: null, time: null }));
-    console.log(strObjArr);
   });
 </script>
 
-<svelte:window on:keydown|preventDefault={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} />
 
 <div class="text-area">
   {#each strObjArr as letter}<span
       class="letter {letter.correct ? 'correct' : ''} {letter.correct === false
         ? 'wrong'
         : ''}">{letter.value}</span
-    >{/each}
+    >{#if letter.value === "\n"}<br />{/if}{/each}
 </div>
 
 <style>
+  .text-area {
+    font-size: var(--font-size-3);
+    letter-spacing: var(--font-letterspacing-1);
+    line-height: var(--font-lineheight-3);
+    font-family: var(--font-serif);
+  }
   .correct {
-    color: green;
+    color: var(--text-faded);
   }
   .wrong {
-    color: red;
+    color: var(--red-5);
   }
 </style>

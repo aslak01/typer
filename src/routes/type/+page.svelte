@@ -1,5 +1,6 @@
 <script lang="ts">
   import { clickoutside } from "@svelte-put/clickoutside";
+  import { chap1extract } from "./chap1";
   import Typer from "./Typer.svelte";
   const string =
     "Soon after this he inquired, if I thought that the breaking up of the";
@@ -23,7 +24,7 @@
   on:click={handleFocus}
   on:clickoutside={handleBlur}
 >
-  <Typer {string} {focused} />
+  <Typer string={chap1extract} {focused} />
 </div>
 
 <style>
