@@ -1,5 +1,7 @@
 <script lang="ts">
+  import type { LetterObj } from "./types";
   import { onMount } from "svelte";
+  import Letter from "./Letter.svelte";
 
   export let string: string;
   export let focused: boolean;
@@ -34,11 +36,6 @@
     }
     //
   }
-  type LetterObj = {
-    value: string;
-    correct: null | Boolean;
-    time: null | number;
-  };
   let strObjArr: LetterObj[] = [];
   onMount(() => {
     strObjArr = string
@@ -50,24 +47,17 @@
 <svelte:window on:keydown={handleKeydown} />
 
 <div class="text-area">
-  {#each strObjArr as letter}<span
-      class="letter {letter.correct ? 'correct' : ''} {letter.correct === false
-        ? 'wrong'
-        : ''}">{letter.value}</span
-    >{#if letter.value === "\n"}<br />{/if}{/each}
+  {#each strObjArr as letter, i}{@const active = i === curr}{@const space =
+      letter.value === " "}<Letter {letter} {space} {active} {focused} />{/each}
 </div>
 
 <style>
   .text-area {
     font-size: var(--font-size-3);
-    letter-spacing: var(--font-letterspacing-1);
+    letter-spacing: var(--font-letterspacing-2);
     line-height: var(--font-lineheight-3);
-    font-family: var(--font-serif);
-  }
-  .correct {
-    color: var(--text-faded);
-  }
-  .wrong {
-    color: var(--red-5);
+    /* font-family: var(--font-serif); */
+    font-weight: var(--font-weight-5);
+    font-family: "Ibarra Real Nova Variable", serif;
   }
 </style>

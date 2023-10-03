@@ -4,7 +4,6 @@ inducements to travel. He is shipwrecked, and swims for his life, gets
 safe on shore in the country of Lilliput; is made a prisoner, and
 carried up the country.
 
-
 My father had a small estate in Nottinghamshire; I was the third of
 five sons. He sent me to Emanuel College in Cambridge at fourteen years
 old, where I resided three years, and applied myself close to my

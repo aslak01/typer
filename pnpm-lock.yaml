@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  '@fontsource-variable/ibarra-real-nova':
+    specifier: ^5.0.15
+    version: 5.0.15
+
 devDependencies:
   '@csstools/postcss-bundler':
     specifier: ^1.0.4
@@ -656,6 +661,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@fontsource-variable/ibarra-real-nova@5.0.15:
+    resolution: {integrity: sha512-sFd+KMlXgVECA1QOZF5HP40RWYYupoVpQryYZd7Nkvbti4cl0UZPSB3xoWx9iPUvqprqgGVbCsm1LsRaTTjT/w==}
+    dev: false
 
   /@jridgewell/gen-mapping@0.3.3:
     resolution: {integrity: sha512-HLhSWOLRi875zjjMG/r+Nv0oCW8umGb0BgEhyX3dDX3egwZtB8PqLnjz3yedt8R5StBrzcg4aBpnh8UA9D1BoQ==}
