@@ -30,6 +30,7 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource-variable/ibarra-real-nova": "^5.0.15",
-		"@fontsource-variable/jost": "^5.0.13"
+		"@fontsource-variable/jost": "^5.0.13",
+		"@fontsource-variable/manrope": "^5.0.14"
 	}
 }

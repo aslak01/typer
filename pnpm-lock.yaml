@@ -11,6 +11,9 @@ dependencies:
   '@fontsource-variable/jost':
     specifier: ^5.0.13
     version: 5.0.13
+  '@fontsource-variable/manrope':
+    specifier: ^5.0.14
+    version: 5.0.14
 
 devDependencies:
   '@csstools/postcss-bundler':
@@ -671,6 +674,10 @@ packages:
 
   /@fontsource-variable/jost@5.0.13:
     resolution: {integrity: sha512-BImVNW3I8NyvOyaS+9A8iYxJvYglXGuYVGgwTRB3aEf4Yk66q+l+gLX8UaIOFkbaIQD/joHsbkC3jOruBSxepg==}
+    dev: false
+
+  /@fontsource-variable/manrope@5.0.14:
+    resolution: {integrity: sha512-9Ocqy5lRhrfPSQZaSyhQWfNnPOO/0kiLsSu3Q/2+d3z7HhjTASdMeZb69SI2P+zI702/FS5vcPYfFHYuZT9yFA==}
     dev: false
 
   /@jridgewell/gen-mapping@0.3.3:
