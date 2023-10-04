@@ -25,22 +25,22 @@
     }
 
     if (focused && inserting) {
-      if (key === string[curr]) {
-        console.log(key);
-        strObjArr[curr].correct = true;
-        curr++;
-      } else {
-        strObjArr[curr].correct = false;
-        curr++;
+      const goal = string[curr];
+      const result = strObjArr[curr];
+      const correct = key === string;
+      result.input = key;
+      if (result.correct === null) {
+        result.correct = correct;
       }
+      strObjArr = strObjArr;
+      curr++;
     }
-    //
   }
   let strObjArr: LetterObj[] = [];
   onMount(() => {
     strObjArr = string
       .split("")
-      .map((l) => ({ value: l, correct: null, time: null }));
+      .map((l) => ({ value: l, input: null, correct: null, time: null }));
   });
 </script>
 
@@ -48,7 +48,14 @@
 
 <div class="text-area">
   {#each strObjArr as letter, i}{@const active = i === curr}{@const space =
-      letter.value === " "}<Letter {letter} {space} {active} {focused} />{/each}
+      letter.value === " "}{@const correct =
+      letter.correct !== null ? letter.value === letter.input : null}<Letter
+      {letter}
+      {correct}
+      {space}
+      {active}
+      {focused}
+    />{/each}
 </div>
 
 <style>

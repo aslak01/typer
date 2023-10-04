@@ -4,11 +4,12 @@
   export let active: boolean;
   export let space: boolean;
   export let focused: boolean;
+  export let correct: boolean | null;
 </script>
 
 <span
-  class:correct={letter.correct}
-  class:wrong={letter.correct === false}
+  class:correct
+  class:wrong={correct === false}
   class:space
   class:focused
   class:active
