@@ -2,6 +2,8 @@
   import type { LetterObj } from "./types";
   import { onMount } from "svelte";
   import Letter from "./Letter.svelte";
+  import { confetti } from "@neoconfetti/svelte";
+  // https://svelte.dev/repl/4e41a080739a4427a1f2c98b7f5d4b24?version=4.2.1
 
   export let string: string;
   export let focused: boolean;
