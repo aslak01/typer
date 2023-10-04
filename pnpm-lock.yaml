@@ -8,6 +8,9 @@ dependencies:
   '@fontsource-variable/ibarra-real-nova':
     specifier: ^5.0.15
     version: 5.0.15
+  '@fontsource-variable/jost':
+    specifier: ^5.0.13
+    version: 5.0.13
 
 devDependencies:
   '@csstools/postcss-bundler':
@@ -664,6 +667,10 @@ packages:
 
   /@fontsource-variable/ibarra-real-nova@5.0.15:
     resolution: {integrity: sha512-sFd+KMlXgVECA1QOZF5HP40RWYYupoVpQryYZd7Nkvbti4cl0UZPSB3xoWx9iPUvqprqgGVbCsm1LsRaTTjT/w==}
+    dev: false
+
+  /@fontsource-variable/jost@5.0.13:
+    resolution: {integrity: sha512-BImVNW3I8NyvOyaS+9A8iYxJvYglXGuYVGgwTRB3aEf4Yk66q+l+gLX8UaIOFkbaIQD/joHsbkC3jOruBSxepg==}
     dev: false
 
   /@jridgewell/gen-mapping@0.3.3:

@@ -65,6 +65,6 @@
     line-height: var(--font-lineheight-3);
     /* font-family: var(--font-serif); */
     font-weight: var(--font-weight-5);
-    font-family: "Ibarra Real Nova Variable", serif;
+    font-family: "Jost", sans-serif;
   }
 </style>
