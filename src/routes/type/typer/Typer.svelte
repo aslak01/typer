@@ -1,13 +1,17 @@
 <script lang="ts">
   import type { LetterObj } from "./types";
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import Letter from "./Letter.svelte";
-  import { confetti } from "@neoconfetti/svelte";
-  // https://svelte.dev/repl/4e41a080739a4427a1f2c98b7f5d4b24?version=4.2.1
 
   export let string: string;
   export let focused: boolean;
   let curr = 0;
+  const strlen = string.length;
+
+  const dispatch = createEventDispatcher();
+  function done() {
+    dispatch("done");
+  }
   function handleKeydown(e: KeyboardEvent) {
     const key = e.key;
     let inserting = false;
@@ -36,6 +40,9 @@
       }
       strObjArr = strObjArr;
       curr++;
+      if (curr === strlen) {
+        done();
+      }
     }
   }
   let strObjArr: LetterObj[] = [];
@@ -48,16 +55,19 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="text-area">
-  {#each strObjArr as letter, i}{@const active = i === curr}{@const space =
-      letter.value === " "}{@const correct =
-      letter.correct !== null ? letter.value === letter.input : null}<Letter
-      {letter}
-      {correct}
-      {space}
-      {active}
-      {focused}
-    />{/each}
+<div>
+  <div class="text-area">
+    {#each strObjArr as letter, i}{@const active = i === curr}{@const space =
+        letter.value === " "}{@const correct =
+        letter.correct !== null ? letter.value === letter.input : null}<Letter
+        {letter}
+        {correct}
+        {space}
+        {active}
+        {focused}
+      />{/each}
+    <slot />
+  </div>
 </div>
 
 <style>
