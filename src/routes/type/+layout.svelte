@@ -3,7 +3,6 @@
 </div>
 
 <style>
-  @import "open-props/postcss/style";
   .container {
     height: 100%;
     display: flex;

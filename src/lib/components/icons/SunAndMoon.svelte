@@ -43,7 +43,6 @@
 </button>
 
 <style>
-  @import "open-props/postcss/style";
   button {
     all: unset;
   }
@@ -86,7 +85,8 @@
     }
 
     .sun-and-moon > .sun-beams {
-      transition: transform 0.5s var(--ease-elastic-4),
+      transition:
+        transform 0.5s var(--ease-elastic-4),
         opacity 0.5s var(--ease-3);
     }
 
