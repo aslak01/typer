@@ -17,14 +17,23 @@
 >
 
 <style>
-  .focused.active {
-    --_color: var(--yellow-4);
-    box-shadow: -0.2ch 0 0 0 var(--_color);
-    position: relative;
+  @property --_opacity {
+    initial-value: 100%;
+    inherits: false;
+    syntax: "<percent>";
   }
-  .focused.active::after {
-    content: "";
-    position: absolute;
+  .focused.active {
+    /* --_color: color(var(--yellow-4) alpha(var(--_opacity), 1)); */
+    /* --_color: rgba(from var(--yellow-4) r g b / var(--_opacity)); */
+    --_color: color-mix(in srgb, var(--yellow-4), transparent var(--_opacity))
+      box-shadow: -0.3ch 0 0 0 var(--_color);
+    animation: blink-animation 2s infinite linear;
+  }
+
+  @keyframes blink-animation {
+    to {
+      --_opacity: 0%;
+    }
   }
   .correct {
     color: var(--text-faded);
