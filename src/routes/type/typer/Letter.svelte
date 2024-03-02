@@ -18,7 +18,13 @@
 
 <style>
   .focused.active {
-    box-shadow: -3px 0px 0px 0px var(--yellow-4);
+    --_color: var(--yellow-4);
+    box-shadow: -0.2ch 0 0 0 var(--_color);
+    position: relative;
+  }
+  .focused.active::after {
+    content: "";
+    position: absolute;
   }
   .correct {
     color: var(--text-faded);
