@@ -3,9 +3,10 @@
   import { onMount, createEventDispatcher } from "svelte";
   import Letter from "./Letter.svelte";
 
-  export let string: string;
+  export let strings: string[];
   export let focused: boolean;
   let curr = 0;
+  const string = strings.join("\n");
   const strlen = string.length;
 
   const dispatch = createEventDispatcher();
@@ -16,7 +17,7 @@
     const key = e.key;
     let inserting = false;
 
-    if (curr >= string.length) {
+    if (curr >= strlen) {
       return;
     }
 
@@ -65,8 +66,7 @@
         {space}
         {active}
         {focused}
-      />{/each}
-    <slot />
+      />{/each}<slot />
   </div>
 </div>
 
