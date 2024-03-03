@@ -8,7 +8,7 @@ html {
   /* light */
   --brand-light: var(--red-9);
   --text1-light: var(--gray-9);
-  --text-light-faded: var(--gray-6);
+  --text-light-faded: var(--gray-5);
   --text2-light: var(--violet-11);
   --surface1-light: var(--gray-1);
   --surface2-light: var(--gray-2);
@@ -132,4 +132,6 @@ html[data-theme="dark"] {
 body {
   min-block-size: 100%;
   height: 100%;
+  background: var(--surface1);
+  color: var(--text1);
 }

@@ -11,7 +11,7 @@
 </main>
 
 <style>
-  main {
-    height: 100%;
-  }
+  /* main { */
+  /*   height: 100%; */
+  /* } */
 </style>

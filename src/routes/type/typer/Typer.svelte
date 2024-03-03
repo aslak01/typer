@@ -6,6 +6,8 @@
   export let strings: string[];
   export let focused: boolean;
   let curr = 0;
+  let isTyping = false;
+  let typingTimeout: number | undefined;
   const string = strings.join("\n");
   const strlen = string.length;
 
@@ -13,9 +15,17 @@
   function done() {
     dispatch("done");
   }
+  function setTypingStatus() {
+    clearTimeout(typingTimeout);
+    isTyping = true;
+    typingTimeout = setTimeout(() => {
+      isTyping = false;
+    }, 3000);
+  }
   function handleKeydown(e: KeyboardEvent) {
     const key = e.key;
     let inserting = false;
+    setTypingStatus();
 
     if (curr >= strlen) {
       return;
@@ -58,15 +68,13 @@
 
 <div>
   <div class="text-area">
-    {#each strObjArr as letter, i}{@const active = i === curr}{@const space =
-        letter.value === " "}{@const correct =
-        letter.correct !== null ? letter.value === letter.input : null}<Letter
-        {letter}
-        {correct}
-        {space}
-        {active}
-        {focused}
-      />{/each}<slot />
+    {#each strObjArr as letter, i}
+      {@const active = i === curr}
+      {@const space = letter.value === " "}
+      {@const correct =
+        letter.correct !== null ? letter.value === letter.input : null}
+      <Letter {letter} {correct} {space} {active} {focused} {isTyping} />{/each}
+    <slot />
   </div>
 </div>
 

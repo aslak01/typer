@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { fade, scale } from "svelte/transition";
+  // import { fade, scale } from "svelte/transition";
 
   import SunAndMoon from "$lib/components/icons/SunAndMoon.svelte";
   import { onMount } from "svelte";
@@ -59,7 +59,7 @@
     }
   }
 
-  button {
-    background: transparent;
-  }
+  /* button { */
+  /*   background: transparent; */
+  /* } */
 </style>

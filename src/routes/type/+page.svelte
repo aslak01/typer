@@ -22,7 +22,7 @@
     showConfetti = true;
   }
 
-  function* iterateArray(arr: string[], linesPerPage = 25) {
+  function* iterateArray(arr: string[], linesPerPage = 10) {
     let index = 0;
     while (index < arr.length) {
       console.log(index);
@@ -35,7 +35,7 @@
 
   const generator = iterateArray(chapter1.pages);
 
-  $: chap = generator.next().value;
+  $: chap = generator.next().value || [""];
 
   function turnPage() {
     console.log("turning page");
@@ -87,8 +87,4 @@
   .game:focus {
     outline: 0;
   }
-  /* .blur { */
-  /*   filter: blur(3px); */
-  /*   -webkit-filter: blur(3px); */
-  /* } */
 </style>

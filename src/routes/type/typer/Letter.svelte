@@ -1,10 +1,12 @@
 <script lang="ts">
   import type { LetterObj } from "./types";
+  import Cursor from "./Cursor.svelte";
   export let letter: LetterObj;
   export let active: boolean;
   export let space: boolean;
   export let focused: boolean;
   export let correct: boolean | null;
+  export let isTyping: boolean;
 </script>
 
 <span
@@ -13,28 +15,17 @@
   class:space
   class:focused
   class:active
-  >{#if letter.value === "\n"}<br />{:else}{letter.value}{/if}</span
+  >{#if letter.value === "\n"}<br
+    />{:else}{letter.value}{/if}{#if active}<Cursor
+      shouldBlink={!isTyping}
+    />{/if}</span
 >
 
 <style>
-  @property --_opacity {
-    initial-value: 100%;
-    inherits: false;
-    syntax: "<percent>";
-  }
-  .focused.active {
-    /* --_color: color(var(--yellow-4) alpha(var(--_opacity), 1)); */
-    /* --_color: rgba(from var(--yellow-4) r g b / var(--_opacity)); */
-    --_color: color-mix(in srgb, var(--yellow-4), transparent var(--_opacity))
-      box-shadow: -0.3ch 0 0 0 var(--_color);
-    animation: blink-animation 2s infinite linear;
+  span {
+    position: relative;
   }
 
-  @keyframes blink-animation {
-    to {
-      --_opacity: 0%;
-    }
-  }
   .correct {
     color: var(--text-faded);
   }
