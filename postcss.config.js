@@ -13,9 +13,7 @@ import postcssPresetEnv from "postcss-preset-env";
 export const plugins = [
   postcssBundler(),
   postcssGlobalData({
-    files: [
-      "node_modules/open-props/media.min.css",
-    ],
+    files: ["node_modules/open-props/media.min.css"],
   }),
   postcssCustomMedia({
     preserve: false,
