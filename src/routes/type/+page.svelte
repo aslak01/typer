@@ -2,8 +2,9 @@
   import { tick } from "svelte";
   import { clickoutside } from "@svelte-put/clickoutside";
   import { confetti } from "@neoconfetti/svelte";
+  import { wpm } from "$lib/stores/typed";
   // https://svelte.dev/repl/4e41a080739a4427a1f2c98b7f5d4b24?version=4.2.1
-  import { chap1extract } from "./chap1";
+  // import { chap1extract } from "./chap1";
   import gullivers from "$lib/data/books/gullivers/gulliver1.json";
   import Typer from "./typer/Typer.svelte";
   const chapter1 = gullivers.filter((i) => i.title === "CHAPTER I.")[0];
@@ -16,11 +17,11 @@
     focused = false;
   }
   let showConfetti = false;
-  async function doConfetti() {
-    showConfetti = false;
-    await tick();
-    showConfetti = true;
-  }
+  // async function doConfetti() {
+  //   showConfetti = false;
+  //   await tick();
+  //   showConfetti = true;
+  // }
 
   function* iterateArray(arr: string[], linesPerPage = 10) {
     let index = 0;
@@ -52,6 +53,7 @@
 
 <div class="wrapp">
   <button on:click={() => turnPage()}>Next page</button>
+  wpm: {$wpm}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->

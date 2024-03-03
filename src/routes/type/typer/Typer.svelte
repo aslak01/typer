@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { LetterObj } from "./types";
   import { onMount, createEventDispatcher } from "svelte";
+  import { typed, time } from "$lib/stores/typed";
   import Letter from "./Letter.svelte";
 
   export let strings: string[];
@@ -8,24 +9,37 @@
   let curr = 0;
   let isTyping = false;
   let typingTimeout: number | undefined;
+  let typingInterval: number | undefined;
   const string = strings.join("\n");
   const strlen = string.length;
 
   const dispatch = createEventDispatcher();
+
   function done() {
     dispatch("done");
   }
+
   function setTypingStatus() {
     clearTimeout(typingTimeout);
+    clearInterval(typingInterval);
     isTyping = true;
+
+    function incrementTime() {
+      time.update((value) => value + 10);
+    }
+    typingInterval = setInterval(incrementTime, 10);
+
     typingTimeout = setTimeout(() => {
       isTyping = false;
+      clearInterval(typingInterval);
     }, 3000);
   }
+
+  // $: console.log($time);
+
   function handleKeydown(e: KeyboardEvent) {
     const key = e.key;
     let inserting = false;
-    setTypingStatus();
 
     if (curr >= strlen) {
       return;
@@ -33,19 +47,26 @@
 
     if (key === "Backspace") {
       strObjArr[curr - 1].correct = null;
+      $typed = $typed.slice(0, -1);
       curr--;
       return;
     }
 
     if (/^[a-zA-Z0-9,.\-\s'";:]$/.test(key)) {
+      setTypingStatus();
       inserting = true;
     }
 
     if (focused && inserting) {
-      const goal = string[curr];
+      // const goal = string[curr];
       const result = strObjArr[curr];
       const correct = key === string;
       result.input = key;
+      if (typeof key === "string" && key.length) {
+        $typed += key;
+        console.log(key);
+        console.log($typed);
+      }
       if (result.correct === null) {
         result.correct = correct;
       }
@@ -56,6 +77,7 @@
       }
     }
   }
+
   let strObjArr: LetterObj[] = [];
   onMount(() => {
     strObjArr = string
