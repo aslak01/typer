@@ -25,7 +25,7 @@
     isTyping = true;
 
     function incrementTime() {
-      time.update((value) => value + 10);
+      $time += 10;
     }
     typingInterval = setInterval(incrementTime, 10);
 
@@ -46,7 +46,7 @@
       return;
     }
 
-    if (key === "Backspace") {
+    if (key === "Backspace" && $typed.length > 0) {
       strObjArr[curr - 1].correct = null;
       $typed = $typed.slice(0, -1);
       curr--;
@@ -61,13 +61,10 @@
     if (focused && inserting) {
       // const goal = string[curr];
       const result = strObjArr[curr];
-      const correct = matches(key, string);
+      const target = result.value;
+      const correct = matches(key, target);
       result.input = key;
-      if (typeof key === "string" && key.length) {
-        $typed += key;
-        console.log(key);
-        console.log($typed);
-      }
+      $typed += key;
       if (result.correct === null) {
         result.correct = correct;
       }
@@ -80,18 +77,21 @@
   }
 
   function replaceSpecialChars(input: string): string {
-    let text;
-    // Replace single curved quotes
-    text = input.replace(/[\u2018\u2019]/g, "'");
-    // Replace double curved quotes
-    text = input.replace(/[\u201C\u201D]/g, '"');
-    // Replace en dash and em dash with hyphen
-    text = input.replace(/[\u2013\u2014]/g, "-");
-    return text;
+    const replacements: Record<string, string> = {
+      "‘": "'",
+      "’": "'",
+      "“": '"',
+      "”": '"',
+      "–": "-",
+      "—": "-",
+    };
+
+    return input.replace(/[‘’“”–—]/g, (match) => replacements[match] || match);
   }
 
   function matches(input: string, tar: string) {
-    return input === replaceSpecialChars(tar);
+    const match = input === replaceSpecialChars(tar);
+    return match;
   }
 
   let strObjArr: LetterObj[] = [];
@@ -109,8 +109,7 @@
     {#each strObjArr as letter, i}
       {@const active = i === curr}
       {@const space = letter.value === " "}
-      {@const correct =
-        letter.correct !== null ? letter.value === letter.input : null}
+      {@const correct = letter.correct !== null ? !!letter.correct : null}
       <Letter {letter} {correct} {space} {active} {focused} {isTyping} />{/each}
     <slot />
   </div>
