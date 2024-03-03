@@ -1,11 +1,14 @@
 <script lang="ts">
+  export let shouldExist: boolean;
   export let shouldBlink: boolean;
 </script>
 
-{#if shouldBlink}
-  <span class="blinking"></span>
-{:else}
-  <span></span>
+{#if shouldExist}
+  {#if shouldBlink}
+    <span class="blinking"></span>
+  {:else}
+    <span></span>
+  {/if}
 {/if}
 
 <style>

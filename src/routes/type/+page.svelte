@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tick } from "svelte";
+  // import { tick } from "svelte";
   import { clickoutside } from "@svelte-put/clickoutside";
   import { confetti } from "@neoconfetti/svelte";
   import { wpm } from "$lib/stores/typed";
@@ -7,9 +7,11 @@
   // import { chap1extract } from "./chap1";
   import gullivers from "$lib/data/books/gullivers/gulliver1.json";
   import Typer from "./typer/Typer.svelte";
+
   const chapter1 = gullivers.filter((i) => i.title === "CHAPTER I.")[0];
-  console.log(chapter1);
+
   let focused = true;
+
   function handleFocus() {
     focused = true;
   }
@@ -84,7 +86,12 @@
     display: inline-block;
   }
   .game {
-    width: 800px;
+    width: 80ch;
+    padding: var(--size-4);
+  }
+  .game.blur {
+    background: var(--surface2);
+    backdrop-filter: 5px;
   }
   .game:focus {
     outline: 0;

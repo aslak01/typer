@@ -31,6 +31,7 @@
 
     typingTimeout = setTimeout(() => {
       isTyping = false;
+      time.update((value) => value - 3000);
       clearInterval(typingInterval);
     }, 3000);
   }
@@ -60,7 +61,7 @@
     if (focused && inserting) {
       // const goal = string[curr];
       const result = strObjArr[curr];
-      const correct = key === string;
+      const correct = matches(key, string);
       result.input = key;
       if (typeof key === "string" && key.length) {
         $typed += key;
@@ -76,6 +77,21 @@
         done();
       }
     }
+  }
+
+  function replaceSpecialChars(input: string): string {
+    let text;
+    // Replace single curved quotes
+    text = input.replace(/[\u2018\u2019]/g, "'");
+    // Replace double curved quotes
+    text = input.replace(/[\u201C\u201D]/g, '"');
+    // Replace en dash and em dash with hyphen
+    text = input.replace(/[\u2013\u2014]/g, "-");
+    return text;
+  }
+
+  function matches(input: string, tar: string) {
+    return input === replaceSpecialChars(tar);
   }
 
   let strObjArr: LetterObj[] = [];

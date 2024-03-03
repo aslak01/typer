@@ -135,3 +135,11 @@ body {
   background: var(--surface1);
   color: var(--text1);
 }
+
+button {
+  all: unset;
+  cursor: pointer;
+  padding: var(--size-3);
+  border-radius: var(--border-radius-4);
+  border: 2 px solid var(--color1);
+}

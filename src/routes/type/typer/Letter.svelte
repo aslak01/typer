@@ -18,6 +18,7 @@
   >{#if letter.value === "\n"}<br
     />{:else}{letter.value}{/if}{#if active}<Cursor
       shouldBlink={!isTyping}
+      shouldExist={focused}
     />{/if}</span
 >
 
