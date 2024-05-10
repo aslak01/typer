@@ -53,7 +53,7 @@
       return;
     }
 
-    if (/^[a-zA-Z0-9,.\-\s'";:\(\)]$/.test(key)) {
+    if (key.length === 1) {
       setTypingStatus();
       inserting = true;
     }
