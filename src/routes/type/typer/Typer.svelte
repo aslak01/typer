@@ -6,6 +6,7 @@
 
   export let strings: string[];
   export let focused: boolean;
+  export let mode: string;
   let curr = 0;
   let isTyping = false;
   let typingTimeout: number | undefined;
@@ -41,6 +42,8 @@
   function handleKeydown(e: KeyboardEvent) {
     const key = e.key;
     let inserting = false;
+
+    if (mode.toLowerCase() !== "i") return;
 
     if (curr >= strlen) {
       return;

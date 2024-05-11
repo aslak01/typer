@@ -18,6 +18,10 @@
   }
   let showConfetti = false;
 
+  let editorState = {
+    mode: "N",
+  };
+
   let state = {
     focused: true,
     page: 1,
@@ -68,7 +72,33 @@
       page = getPage(gullivers[state.chapter - 1].pages, 0, state.linesPerPage);
     }
   }
+
+  let game: HTMLElement;
+
+  function handleKeydown(event: KeyboardEvent) {
+    const { key } = event;
+    console.log(key);
+
+    if (key.toLowerCase() === "i") {
+      if (editorState.mode !== "I") {
+        editorState.mode = "I";
+        game.focus();
+        console.log("enteringInsertMode");
+        console.log(game);
+      }
+    }
+
+    if (key === "Escape") {
+      if (editorState.mode !== "N") {
+        editorState.mode = "N";
+        game.blur();
+        console.log("leaving InsertMode");
+      }
+    }
+  }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 {#if page}
   <div class="wrapp">
@@ -91,23 +121,30 @@
     <br />
 
     {currChap.title}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div
       class="game {focused ? '' : 'blur'}"
+      bind:this={game}
       use:clickoutside
       on:blur={handleBlur}
       on:focus={handleFocus}
       on:click={handleFocus}
       on:clickoutside={handleBlur}
       tabindex="0"
+      role="application"
     >
       {#key page}
-        <Typer strings={page} {focused} on:done={() => turnPage()}>
+        <Typer
+          strings={page}
+          mode={editorState.mode}
+          {focused}
+          on:done={() => turnPage()}
+        >
           {#if showConfetti}
             <div class="confettiwrapper">
-              <div use:confetti />
+              <div use:confetti></div>
             </div>
           {/if}
         </Typer>
