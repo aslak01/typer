@@ -5,8 +5,10 @@
   import { confetti } from "@neoconfetti/svelte";
   import { wpm } from "$lib/stores/typed";
   // https://svelte.dev/repl/4e41a080739a4427a1f2c98b7f5d4b24?version=4.2.1
-  import gullivers from "$lib/data/books/gullivers/gulliver1.json";
   import Typer from "./typer/Typer.svelte";
+
+  /** @type {import('./$types').PageData} */
+  export let data;
 
   let focused = true;
 
@@ -29,7 +31,7 @@
     linesPerPage: 8,
   };
 
-  $: currChap = gullivers[state.chapter - 1];
+  $: currChap = data.chapters[state.chapter - 1];
   $: currPages = currChap.pages.filter((l) => l !== "");
   $: pagesInChap = Math.ceil(currPages.length / state.linesPerPage);
   $: currPg = state.page;
@@ -64,12 +66,16 @@
   }
   function incChap() {
     const currChap = state.chapter;
-    const totalChaps = gullivers.length;
+    const totalChaps = data.chapters.length;
     if (currChap < totalChaps) {
       state.chapter++;
       state.page = 1;
       state = state;
-      page = getPage(gullivers[state.chapter - 1].pages, 0, state.linesPerPage);
+      page = getPage(
+        data.chapters[state.chapter - 1].pages,
+        0,
+        state.linesPerPage,
+      );
     }
   }
 

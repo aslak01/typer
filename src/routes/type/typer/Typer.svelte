@@ -44,6 +44,7 @@
     let inserting = false;
 
     if (mode.toLowerCase() !== "i") return;
+    console.log(mode);
 
     if (curr >= strlen) {
       return;
