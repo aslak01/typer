@@ -16,7 +16,7 @@
   class:focused
   class:active
   >{#if letter.value === "\n"}<br
-    />{:else}{letter.value}{/if}{#if active}<Cursor
+    />{:else if letter.value === " "}&ensp;{:else}{letter.value}{/if}{#if active}<Cursor
       shouldBlink={!isTyping}
       shouldExist={focused}
     />{/if}</span
@@ -31,9 +31,18 @@
     color: var(--text-faded);
   }
   .wrong {
-    color: var(--red-5);
-    box-shadow: 0 3px 0 0 var(--red-5);
+    color: var(--red-3);
+    /* box-shadow: 0 3px 0 0 var(--red-5); */
+    /* text-decoration: var(--red-5) wavy underline; */
+
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--red-5);
   }
+  /* .space { */
+  /*   display: inline-block; */
+  /*   width: 0.5ch; */
+  /* } */
   /* .wrong.space { */
   /*   background: var(--red-4); */
   /* } */

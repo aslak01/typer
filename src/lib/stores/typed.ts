@@ -1,3 +1,4 @@
+import { browser } from '$app/environment';
 // import { setContext } from 'svelte'
 import { writable, derived } from "svelte/store";
 
@@ -13,3 +14,8 @@ export const wpm = derived([typed, time], ([$typed, $time]) => {
   const minutes = $time / (1000 * 60);
   return minutes > 0 ? Math.round(estimatedWords / minutes) : 0;
 });
+
+
+
+const defaultValue = 0
+const initialValue = browser ? window.localStorage.getItem('wqwtheme') ?? defaultValue : defaultValue;

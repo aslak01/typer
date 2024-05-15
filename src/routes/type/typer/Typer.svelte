@@ -6,6 +6,7 @@
 
   export let strings: string[];
   export let focused: boolean;
+  export let mode: string;
   let curr = 0;
   let isTyping = false;
   let typingTimeout: number | undefined;
@@ -42,6 +43,9 @@
     const key = e.key;
     let inserting = false;
 
+    if (mode.toLowerCase() !== "i") return;
+    console.log(mode);
+
     if (curr >= strlen) {
       return;
     }
@@ -53,7 +57,7 @@
       return;
     }
 
-    if (/^[a-zA-Z0-9,.\-\s'";:\(\)]$/.test(key)) {
+    if (key.length === 1) {
       setTypingStatus();
       inserting = true;
     }
