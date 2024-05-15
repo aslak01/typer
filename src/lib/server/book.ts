@@ -1,8 +1,6 @@
 export const prerender = true;
 
 export function getChapters(txt: string) {
-  console.log(typeof txt)
-  console.log(txt)
   const chapters = txt.split(/(CHAPTER.+)\n/).filter(Boolean);
 
   type Chapter = {
