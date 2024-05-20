@@ -1,6 +1,5 @@
 <script lang="ts">
-  export let shouldExist: boolean;
-  export let shouldBlink: boolean;
+  let { shouldExist, shouldBlink } = $props();
 </script>
 
 {#if shouldExist}

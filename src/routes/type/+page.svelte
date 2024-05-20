@@ -1,62 +1,63 @@
 <script lang="ts">
-  // import { tick } from "svelte";
   import { onMount } from "svelte";
-  import { clickoutside } from "@svelte-put/clickoutside";
-  import { confetti } from "@neoconfetti/svelte";
+  // import { confetti } from "@neoconfetti/svelte";
   import { wpm } from "$lib/stores/typed";
-  // https://svelte.dev/repl/4e41a080739a4427a1f2c98b7f5d4b24?version=4.2.1
   import Typer from "./typer/Typer.svelte";
 
-  /** @type {import('./$types').PageData} */
-  export let data;
+  const { data } = $props();
+  const { chapters } = data;
 
-  let focused = true;
-
-  function handleFocus() {
-    focused = true;
-  }
-  function handleBlur() {
-    focused = false;
-  }
-  let showConfetti = false;
+  let game: HTMLElement | null = $state(null);
+  let showConfetti = $state(false);
 
   let editorState = {
     mode: "N",
   };
 
-  let state = {
+  let gameState = $state({
     focused: true,
     page: 1,
     chapter: 1,
     linesPerPage: 8,
-  };
+    charsTyped: 0,
+  });
 
-  $: currChap = data.chapters[state.chapter - 1];
-  $: currPages = currChap.pages.filter((l) => l !== "");
-  $: pagesInChap = Math.ceil(currPages.length / state.linesPerPage);
-  $: currPg = state.page;
-  $: lnsPerPage = state.linesPerPage;
+  let currChap = $derived(
+    chapters ? chapters[gameState.chapter - 1] : { title: "", pages: "" },
+  );
+  let currPages = $derived(currChap.pages);
+  let pagesInChap = $derived(
+    Math.ceil(currPages.length / gameState.linesPerPage),
+  );
+  let currPg = $derived(gameState.page);
+  let lnsPerPage = $derived(gameState.linesPerPage);
 
-  function getPage(text: string[], start: number, lines: number): string[] {
+  function getPage(text: string, start: number, lines: number): string {
     return text.slice(start, start + lines);
   }
 
-  let page;
+  function getLines() {
+    const TMP_WPL = 15;
+    const TMP_CPW = 5;
+    const LNS = 8;
+    return TMP_WPL * TMP_CPW * LNS;
+  }
+
+  let page = $state("");
 
   onMount(() => {
-    page = currPages.slice(currPg - 1, lnsPerPage);
+    page = getPage(currPages, 0, getLines());
   });
 
   function turnPage() {
     console.log("turning page");
 
-    const currPgEnd = state.page * state.linesPerPage;
-    state.page += 1;
-    state = state;
-    // const currPgStart = currPgEnd - state.linesPerPage
-    const done = state.page >= pagesInChap;
+    const currPgEnd = gameState.page * gameState.linesPerPage;
+    gameState.page += 1;
+    // const currPgStart = currPgEnd - gameState.linesPerPage
+    const done = gameState.page >= pagesInChap;
     if (!done) {
-      page = getPage(currPages, currPgEnd, state.linesPerPage);
+      page = getPage(currPages, currPgEnd, gameState.linesPerPage);
       console.log(page);
       console.log(currPgEnd);
     } else {
@@ -65,21 +66,18 @@
     }
   }
   function incChap() {
-    const currChap = state.chapter;
-    const totalChaps = data.chapters.length;
+    const currChap = gameState.chapter;
+    const totalChaps = chapters?.length || 1;
     if (currChap < totalChaps) {
-      state.chapter++;
-      state.page = 1;
-      state = state;
+      gameState.chapter++;
+      gameState.page = 1;
       page = getPage(
-        data.chapters[state.chapter - 1].pages,
+        chapters[gameState.chapter - 1].pages,
         0,
-        state.linesPerPage,
+        gameState.linesPerPage,
       );
     }
   }
-
-  let game: HTMLElement;
 
   function handleKeydown(event: KeyboardEvent) {
     const { key } = event;
@@ -88,7 +86,7 @@
     if (key.toLowerCase() === "i") {
       if (editorState.mode !== "I") {
         editorState.mode = "I";
-        game.focus();
+        game?.focus();
         console.log("enteringInsertMode");
         console.log(game);
       }
@@ -97,7 +95,7 @@
     if (key === "Escape") {
       if (editorState.mode !== "N") {
         editorState.mode = "N";
-        game.blur();
+        game?.blur();
         console.log("leaving InsertMode");
       }
     }
@@ -110,49 +108,31 @@
   <div class="wrapp">
     <div class="statusbar">
       <div class="statusbar-item">
-        <button on:click={() => turnPage()}>Next page</button>
+        <button onclick={() => turnPage()}>Next page</button>
       </div>
       <div class="statusbar-item">
-        <button on:click={() => incChap()}>Next chapter</button>
+        <button onclick={() => incChap()}>Next chapter</button>
       </div>
 
       <div class="statusbar-item">
         wpm: {$wpm}
       </div>
       <div class="statusbar-item">
-        Page: {state.page} / {pagesInChap}
+        Page: {gameState.page} / {pagesInChap}
       </div>
     </div>
 
     <br />
 
     {currChap.title}
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-    <div
-      class="game {focused ? '' : 'blur'}"
-      bind:this={game}
-      use:clickoutside
-      on:blur={handleBlur}
-      on:focus={handleFocus}
-      on:click={handleFocus}
-      on:clickoutside={handleBlur}
-      tabindex="0"
-      role="application"
-    >
+    <div class="game" bind:this={game}>
       {#key page}
-        <Typer
-          strings={page}
-          mode={editorState.mode}
-          {focused}
-          on:done={() => turnPage()}
-        >
-          {#if showConfetti}
-            <div class="confettiwrapper">
-              <div use:confetti></div>
-            </div>
-          {/if}
+        <Typer {page} mode={editorState.mode} on:done={() => turnPage()}>
+          <!-- {#if showConfetti} -->
+          <!--   <div class="confettiwrapper"> -->
+          <!--     <div use:confetti></div> -->
+          <!--   </div> -->
+          <!-- {/if} -->
         </Typer>
       {/key}
     </div>
@@ -160,18 +140,14 @@
 {/if}
 
 <style>
-  .confettiwrapper {
-    /* border: 4px solid red; */
-    display: inline-block;
-  }
+  /* .confettiwrapper { */
+  /*   /* border: 4px solid red; */
+  /*   display: inline-block; */
+  /* } */
   .game {
-    width: 80ch;
+    width: 60ch;
     padding: var(--size-4);
     background: var(--surface2);
-  }
-  .game.blur {
-    background: var(--surface1);
-    backdrop-filter: blur(5px);
   }
   .game:focus {
     outline: 3px var(--surface5);

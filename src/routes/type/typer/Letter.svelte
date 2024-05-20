@@ -1,24 +1,13 @@
 <script lang="ts">
-  import type { LetterObj } from "./types";
   import Cursor from "./Cursor.svelte";
-  export let letter: LetterObj;
-  export let active: boolean;
-  export let space: boolean;
-  export let focused: boolean;
-  export let correct: boolean | null;
-  export let isTyping: boolean;
+  let { letter, active, space, correct, isTyping } = $props();
 </script>
 
-<span
-  class:correct
-  class:wrong={correct === false}
-  class:space
-  class:focused
-  class:active
+<span class:correct class:wrong={correct === false} class:space class:active
   >{#if letter.value === "\n"}<br
     />{:else if letter.value === " "}&ensp;{:else}{letter.value}{/if}{#if active}<Cursor
       shouldBlink={!isTyping}
-      shouldExist={focused}
+      shouldExist={true}
     />{/if}</span
 >
 

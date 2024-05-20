@@ -2,8 +2,6 @@ import { getChapters } from "$lib/server/book";
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ fetch }) {
-  // const partTitle = "PART I. A VOYAGE TO LILLIPUT."
-
   const part1path = "/gullivers/split/1-part1/part1.txt"
   try {
     const response = await fetch(part1path)

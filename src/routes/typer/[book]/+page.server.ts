@@ -1,15 +1,14 @@
 import { getChapters } from "$lib/server/book";
 import { bookIndex } from "$lib/data/books/index";
+import type { PageServerLoad } from "./$types";
 
-/** @type {import('./$types').PageServerLoad} */
-export async function load({ params, fetch }) {
+export const load: PageServerLoad = async ({ params, fetch }) => {
   try {
     const currentBook = bookIndex.find((book) => book.path === params.book)
     if (!currentBook) {
       throw new Error(`Invalid book, ${params.book}`)
     }
     const textPath = `/books/${currentBook.path}/${currentBook.parts[1].filename}`
-    console.log(textPath)
     const response = await fetch(textPath)
 
     if (!response.ok) {
@@ -22,6 +21,7 @@ export async function load({ params, fetch }) {
     }
     const chapters = getChapters(text)
     return {
+      params,
       bookMeta: currentBook,
       chapters
     }

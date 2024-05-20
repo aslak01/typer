@@ -1,22 +1,21 @@
 export const prerender = true;
 
-export function getChapters(txt: string) {
+type Chapter = {
+  title: string
+  pages: string
+}
+
+export function getChapters(txt: string): Chapter[] {
   const chapters = txt.split(/(CHAPTER.+)\n/).filter(Boolean);
 
-  type Chapter = {
-    title: string;
-    pages: string;
-  };
-  type Chapters = Chapter[];
 
   const pairs = chapters.reduce(
-    (result: Chapters, currentValue: string, index) => {
+    (result: Chapter[], currentValue: string, index: number) => {
       if (index % 2 === 0) {
         const pair = {
           "title": currentValue,
           "pages": chapters[index + 1],
         };
-
         result.push(pair);
       }
       return result;
@@ -32,18 +31,14 @@ export function getChapters(txt: string) {
     if (index >= array.length) {
       return [];
     }
-
     const str = array[index].trim();
-
     if (str !== "") {
-      encounteredEmptyLine = false;
       const rest = trimArrayWithRulesRecursive(array, index + 1, false);
       return [str, ...rest];
     } else {
       if (!encounteredEmptyLine) {
-        encounteredEmptyLine = true;
         const rest = trimArrayWithRulesRecursive(array, index + 1, true);
-        return [str, ...rest];
+        return ["\n", ...rest];
       } else {
         return trimArrayWithRulesRecursive(array, index + 1, true);
       }
@@ -57,14 +52,14 @@ export function getChapters(txt: string) {
   }
 
   function sepText(chapter: string) {
-    const trimmed = trimArrayWithRulesRecursive(chapter.split("\n"));
+    const trimmed = trimArrayWithRulesRecursive(chapter.split("\n"))
     return trimFinalEmptyLines(trimmed);
   }
 
   const bookData = pairs.map((pair) => {
     return {
       "title": pair.title,
-      "pages": sepText(pair.pages),
+      "pages": sepText(pair.pages).join(" "),
     };
   });
 
