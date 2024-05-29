@@ -8,16 +8,17 @@
 
   function getLines() {
     const TMP_CPW = 5;
-    const TMP_WPL = 3;
-    const LNS = 2;
+    const TMP_WPL = 13;
+    const LNS = 4;
     return TMP_WPL * TMP_CPW * LNS;
   }
 
   function createGameState() {
     if (!chapter) return;
-    const pageLengthApprox = getLines();
+    const pageLenMax = getLines();
+    const paddingLen = 1000;
     const firstPageLen = sliceAtNearestSpace(
-      chapter.pages.slice(0, pageLengthApprox),
+      chapter.pages.slice(0, pageLenMax),
     ).length;
     let page = $state(0);
     let mode = $state("N");
@@ -27,10 +28,23 @@
       if (!chapter) return;
       page++;
       pageStart = pageEnd;
-      pageEnd = sliceAtNearestSpace(
-        chapter.pages.slice(pageStart, pageStart + pageLengthApprox),
-      ).length;
+      pageEnd =
+        pageStart +
+        sliceAtNearestSpace(
+          chapter.pages.slice(pageStart, pageStart + pageLenMax),
+        ).length;
     }
+    let activePage = $derived(chapter.pages.slice(pageStart, pageEnd));
+    let aboveContent = $derived.by(() => {
+      const end = pageStart;
+      const startPos = end - paddingLen;
+      const start = startPos > 0 ? startPos : 0;
+      return chapter.pages.slice(start, end);
+    });
+    let belowContent = $derived.by(() => {
+      const start = pageEnd;
+      return chapter.pages.slice(start, paddingLen);
+    });
     return {
       get page() {
         return page;
@@ -40,6 +54,15 @@
       },
       get pageEnd() {
         return pageEnd;
+      },
+      get activePage() {
+        return activePage;
+      },
+      get aboveContent() {
+        return aboveContent;
+      },
+      get belowContent() {
+        return belowContent;
       },
       get mode() {
         return mode;
@@ -56,33 +79,6 @@
   let playerState = $state({
     activeBook: "",
     activeBooks: [],
-  });
-
-  let activePage = $derived.by(() => {
-    if (!gameState || !chapter) {
-      return "";
-    }
-    return chapter.pages.slice(gameState.pageStart, gameState.pageEnd);
-  });
-
-  let aboveContent = $derived.by(() => {
-    if (!gameState || !chapter) {
-      return "";
-    }
-    const introLen = 1000;
-    const end = gameState.pageStart;
-    const startPos = end - introLen;
-    const start = startPos > 0 ? startPos : 0;
-    return chapter.pages.slice(start, end);
-  });
-
-  let belowContent = $derived.by(() => {
-    if (!gameState || !chapter) {
-      return "";
-    }
-    const end = 1000;
-    const start = gameState.pageEnd;
-    return chapter.pages.slice(start, end);
   });
 
   async function handleKeydown(event: KeyboardEvent) {
@@ -108,13 +104,13 @@
 <div class="game-container">
   {#if chapter && gameState}
     <h1>{chapter.title}</h1>
-    {aboveContent}
+    {gameState.aboveContent}
     <Game
-      chapter={activePage}
+      chapter={gameState.activePage}
       mode={gameState.mode}
       nextPage={gameState.turnPage}
     />
-    {belowContent}
+    {gameState.belowContent}
   {/if}
 </div>
 

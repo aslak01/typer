@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { time } from "$lib/stores/typed";
-
-  let { chapter, mode, nextPage } = $props();
+  let {
+    chapter,
+    mode,
+    nextPage,
+  }: { chapter: string; mode: string; nextPage: () => void } = $props();
   let curr = $state(0);
   let isTyping = $state(false);
   let typingTimeout: number | undefined;
   let typingInterval: number | undefined;
-  const strlen = chapter.length;
   let typed = $state("");
+  let time = $state(0);
 
   let currLen = $derived(chapter.length);
-
-  let done = $state(false);
 
   function setTypingStatus() {
     clearTimeout(typingTimeout);
@@ -19,18 +19,16 @@
     isTyping = true;
 
     function incrementTime() {
-      $time += 10;
+      time += 10;
     }
     typingInterval = setInterval(incrementTime, 10);
 
     typingTimeout = setTimeout(() => {
       isTyping = false;
-      time.update((value) => value - 3000);
+      time = -3000;
       clearInterval(typingInterval);
     }, 3000);
   }
-
-  // $: console.log($time);
 
   function handleKeydown(e: KeyboardEvent) {
     const key = e.key;
@@ -38,8 +36,10 @@
 
     if (mode.toLowerCase() !== "i") return;
 
-    if (curr >= strlen) {
+    if (curr >= currLen) {
       console.log("YOU DID IT");
+      typed = "";
+      curr = 0;
       nextPage();
       return;
     }
