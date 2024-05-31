@@ -1,20 +1,19 @@
 export const prerender = true;
 
 type Chapter = {
-  title: string
-  pages: string
-}
+  title: string;
+  pages: string;
+};
 
 export function getChapters(txt: string): Chapter[] {
   const chapters = txt.split(/(CHAPTER.+)\n/).filter(Boolean);
-
 
   const pairs = chapters.reduce(
     (result: Chapter[], currentValue: string, index: number) => {
       if (index % 2 === 0) {
         const pair = {
-          "title": currentValue,
-          "pages": chapters[index + 1],
+          title: currentValue,
+          pages: chapters[index + 1],
         };
         result.push(pair);
       }
@@ -52,17 +51,20 @@ export function getChapters(txt: string): Chapter[] {
   }
 
   function sepText(chapter: string) {
-    const trimmed = trimArrayWithRulesRecursive(chapter.split("\n"))
+    const trimmed = trimArrayWithRulesRecursive(chapter.split("\n"));
     return trimFinalEmptyLines(trimmed);
   }
 
   const bookData = pairs.map((pair) => {
     return {
-      "title": pair.title,
-      "pages": sepText(pair.pages).join(" "),
+      title: pair.title,
+      pages: sepText(pair.pages)
+        .map((page) => page.replaceAll("\n", "↪"))
+        .join(" ")
+        .replaceAll(" ↪ ", "↪")
+        .replaceAll("↪", "↪→"),
     };
   });
 
   return bookData;
 }
-

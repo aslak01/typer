@@ -4,29 +4,29 @@ import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
   try {
-    const currentBook = bookIndex.find((book) => book.path === params.book)
+    const currentBook = bookIndex.find((book) => book.path === params.book);
     if (!currentBook) {
-      throw new Error(`Invalid book, ${params.book}`)
+      throw new Error(`Invalid book, ${params.book}`);
     }
-    const textPath = `/books/${currentBook.path}/${currentBook.parts[1].filename}`
-    const response = await fetch(textPath)
+    const textPath = `/books/${currentBook.path}/${currentBook.parts[1].filename}`;
+    const response = await fetch(textPath);
 
     if (!response.ok) {
-      throw new Error(`HTTP error: ${response.status}`)
+      throw new Error(`HTTP error: ${response.status}`);
     }
-    const text = await response.text()
-    console.log(text)
+    const text = await response.text();
+    console.log(text);
     if (typeof text !== "string") {
-      throw new Error(`Malformed fetched book`)
+      throw new Error(`Malformed fetched book`);
     }
-    const chapters = getChapters(text)
+    const chapters = getChapters(text);
     return {
       params,
       bookMeta: currentBook,
-      chapters
-    }
+      chapters,
+    };
   } catch (error) {
-    console.error(error)
-    return { error: 'Unable to fetch book' }
+    console.error(error);
+    return { error: "Unable to fetch book" };
   }
-}
+};

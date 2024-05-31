@@ -10,10 +10,11 @@
   let typingInterval: number | undefined;
   let typed = $state("");
   let time = $state(0);
+  console.log(chapter);
 
   let currLen = $derived(chapter.length);
 
-  function setTypingStatus() {
+  function setTypingStatus(bool: boolean) {
     clearTimeout(typingTimeout);
     clearInterval(typingInterval);
     isTyping = true;
@@ -31,10 +32,55 @@
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    const key = e.key;
-    let inserting = false;
+    const { key } = e;
 
-    if (mode.toLowerCase() !== "i") return;
+    function isInput(inp: string): boolean {
+      return (
+        inp.length === 1 ||
+        inp === "Enter" ||
+        inp === "Tab" ||
+        inp === "Backspace"
+      );
+    }
+    function isInsertMode(m: string) {
+      return m.toLowerCase() === "i";
+    }
+
+    if (!isInsertMode(mode)) {
+      if (key.toLowerCase() === "i") {
+        mode = "I";
+        setTypingStatus(true);
+        return;
+      }
+    }
+
+    if (isInsertMode(mode)) {
+      if (key === "Escape") {
+        mode = "N";
+        setTypingStatus(false);
+        return;
+      }
+    }
+
+    if (!isInput(key) || !isInsertMode(mode)) {
+      return;
+    }
+    if (key === "Backspace" && typed.length > 0) {
+      typed = typed.slice(0, -1);
+      curr--;
+      return;
+    }
+
+    let inserted = key;
+
+    if (key === "Enter") {
+      inserted = "↪";
+    }
+    if (key === "Tab") {
+      inserted = "→";
+    }
+    typed += inserted;
+    curr++;
 
     if (curr >= currLen) {
       console.log("YOU DID IT");
@@ -42,23 +88,6 @@
       curr = 0;
       nextPage();
       return;
-    }
-
-    if (key === "Backspace" && typed.length > 0) {
-      typed = typed.slice(0, -1);
-      curr--;
-      return;
-    }
-
-    if (key.length === 1) {
-      setTypingStatus();
-      inserting = true;
-    }
-
-    if (inserting) {
-      typed += key;
-      curr++;
-      //console.log(typed);
     }
   }
 
@@ -95,9 +124,10 @@
         {#if !wrong}
           {#if letter === " "}
             &ensp;
-          {:else if letter === "\n"}
-            <br />
-            <br />
+          {:else if letter === "↪"}
+            ↪<br />
+          {:else if letter === "→"}
+            <span class="tab">→</span>
           {:else}
             {letter}
           {/if}
@@ -122,7 +152,10 @@
     height: 40dvh;
     overflow: hidden;
   }
-  .text-area {
+  /* .text-area { */
+  /* } */
+  .tab {
+    padding-inline: 1ch;
   }
 
   .correct {

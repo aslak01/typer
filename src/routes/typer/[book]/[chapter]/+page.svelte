@@ -13,37 +13,32 @@
     return TMP_WPL * TMP_CPW * LNS;
   }
 
-  function createGameState() {
-    if (!chapter) return;
+  function createGameState(pages: string) {
     const pageLenMax = getLines();
-    const paddingLen = 1000;
-    const firstPageLen = sliceAtNearestSpace(
-      chapter.pages.slice(0, pageLenMax),
-    ).length;
+    const paddingLen = 800;
+    const firstPageLen = sliceAtNearestSpace(pages.slice(0, pageLenMax)).length;
     let page = $state(0);
     let mode = $state("N");
     let pageStart = $state(0);
     let pageEnd = $state(firstPageLen);
     function turnPage() {
-      if (!chapter) return;
       page++;
       pageStart = pageEnd;
       pageEnd =
         pageStart +
-        sliceAtNearestSpace(
-          chapter.pages.slice(pageStart, pageStart + pageLenMax),
-        ).length;
+        sliceAtNearestSpace(pages.slice(pageStart, pageStart + pageLenMax))
+          .length;
     }
-    let activePage = $derived(chapter.pages.slice(pageStart, pageEnd));
+    let activePage = $derived(pages.slice(pageStart, pageEnd));
     let aboveContent = $derived.by(() => {
       const end = pageStart;
       const startPos = end - paddingLen;
       const start = startPos > 0 ? startPos : 0;
-      return chapter.pages.slice(start, end);
+      return pages.slice(start, end);
     });
     let belowContent = $derived.by(() => {
       const start = pageEnd;
-      return chapter.pages.slice(start, paddingLen);
+      return pages.slice(start, paddingLen);
     });
     return {
       get page() {
@@ -74,32 +69,13 @@
     };
   }
 
-  const gameState = createGameState();
+  const gameState = chapter && createGameState(chapter.pages);
 
   let playerState = $state({
     activeBook: "",
     activeBooks: [],
   });
-
-  async function handleKeydown(event: KeyboardEvent) {
-    if (!gameState) return;
-    const { key } = event;
-
-    if (key.toLowerCase() === "i") {
-      if (gameState.mode !== "I") {
-        gameState.mode = "I";
-      }
-    }
-
-    if (key === "Escape") {
-      if (gameState.mode !== "N") {
-        gameState.mode = "N";
-      }
-    }
-  }
 </script>
-
-<svelte:window on:keydown={handleKeydown} />
 
 <div class="game-container">
   {#if chapter && gameState}
