@@ -10,7 +10,6 @@
   let typingInterval: number | undefined;
   let typed = $state("");
   let time = $state(0);
-  console.log(chapter);
 
   let currLen = $derived(chapter.length);
 
@@ -33,6 +32,7 @@
 
   function handleKeydown(e: KeyboardEvent) {
     const { key } = e;
+    const hasShift = e.getModifierState("Shift");
 
     function isInput(inp: string): boolean {
       return (
@@ -60,14 +60,22 @@
         setTypingStatus(false);
         return;
       }
+      if (key === "Tab") {
+        // tab is an input so prevent it behaving
+        // as a window controller
+        e.preventDefault();
+      }
     }
 
     if (!isInput(key) || !isInsertMode(mode)) {
       return;
     }
-    if (key === "Backspace" && typed.length > 0) {
-      typed = typed.slice(0, -1);
-      curr--;
+
+    if (key === "Backspace") {
+      if (typed.length > 0) {
+        typed = typed.slice(0, -1);
+        curr--;
+      }
       return;
     }
 
@@ -109,11 +117,23 @@
     const match = input === replaceSpecialChars(tar);
     return match;
   }
+  let game: HTMLElement | null = null;
+  $effect(() => {
+    if (!game) return;
+    if (mode === "I") {
+      game.setAttribute("tabindex", "-1");
+      game.focus();
+    }
+    if (mode === "N") {
+      game.setAttribute("tabindex", "0");
+      game.blur();
+    }
+  });
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="text-zone">
+<div bind:this={game} class="text-zone {mode === 'I' ? 'active' : ''}">
   <div class="text-area">
     {#each chapter as letter, i}
       {@const active = i === typed.length}
@@ -143,21 +163,21 @@
 
 <style>
   .text-zone {
-    font-size: var(--font-size-4);
-    letter-spacing: var(--font-letterspacing-2);
-    line-height: var(--font-lineheight-4);
-    font-weight: var(--font-weight-5);
-    font-family: "Jost", sans-serif;
-
-    height: 40dvh;
-    overflow: hidden;
+    padding-inline: 1ch;
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
-  /* .text-area { */
-  /* } */
+  .text-zone.active {
+    background: var(--surface3);
+  }
+  .text-zone:focus-within {
+    outline: none;
+  }
+
   .tab {
     padding-inline: 1ch;
   }
-
   .correct {
     color: var(--text-faded);
   }

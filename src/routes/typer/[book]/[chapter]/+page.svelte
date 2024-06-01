@@ -4,6 +4,8 @@
   let { chapter } = data;
 
   import Game from "./game/Game.svelte";
+  import PadderParser from "./game/PadderParser.svelte";
+  import StatusBar from "./game/StatusBar.svelte";
   import { sliceAtNearestSpace } from "$lib/utils";
 
   function getLines() {
@@ -15,7 +17,7 @@
 
   function createGameState(pages: string) {
     const pageLenMax = getLines();
-    const paddingLen = 800;
+    const paddingLen = 300;
     const firstPageLen = sliceAtNearestSpace(pages.slice(0, pageLenMax)).length;
     let page = $state(0);
     let mode = $state("N");
@@ -29,7 +31,7 @@
         sliceAtNearestSpace(pages.slice(pageStart, pageStart + pageLenMax))
           .length;
     }
-    let activePage = $derived(pages.slice(pageStart, pageEnd));
+    let activePage = $derived(pages.slice(pageStart, pageEnd).trim());
     let aboveContent = $derived.by(() => {
       const end = pageStart;
       const startPos = end - paddingLen;
@@ -38,7 +40,8 @@
     });
     let belowContent = $derived.by(() => {
       const start = pageEnd;
-      return pages.slice(start, paddingLen);
+      const end = start + paddingLen;
+      return pages.slice(start, end);
     });
     return {
       get page() {
@@ -77,21 +80,58 @@
   });
 </script>
 
+<StatusBar wpm={10} acc={87} />
+
 <div class="game-container">
   {#if chapter && gameState}
-    <h1>{chapter.title}</h1>
-    {gameState.aboveContent}
-    <Game
-      chapter={gameState.activePage}
-      mode={gameState.mode}
-      nextPage={gameState.turnPage}
-    />
-    {gameState.belowContent}
+    <header>
+      <h1>{chapter.title}</h1>
+    </header>
+    <div class="text-container">
+      <div class="section-wrapper">
+        <PadderParser text={gameState.aboveContent} fade={true} pos="top" />
+      </div>
+
+      <div class="section-wrapper">
+        <Game
+          chapter={gameState.activePage}
+          mode={gameState.mode}
+          nextPage={gameState.turnPage}
+        />
+      </div>
+      <div class="section-wrapper">
+        <PadderParser text={gameState.belowContent} fade={false} pos="bot" />
+      </div>
+    </div>
   {/if}
 </div>
 
 <style>
   .game-container {
-    padding: 1em;
+    height: 100dvh;
+    padding: 1rem;
+    font-size: var(--font-size-4);
+    letter-spacing: var(--font-letterspacing-2);
+    line-height: var(--font-lineheight-4);
+    font-weight: var(--font-weight-5);
+  }
+  header h1 {
+    font-size: var(--font-size-4);
+  }
+  .text-container {
+    display: grid;
+    /*gap: 0.5rem;*/
+    grid-template-columns: 1fr;
+    grid-template-rows: 33% 33% 33%;
+    /*grid-auto-rows: 1fr;*/
+    max-inline-size: var(--size-content-3);
+    max-height: 90%;
+    height: 90%;
+    overflow: hidden;
+  }
+  .section-wrapper {
+    display: flex;
+    align-items: start;
+    position: relative;
   }
 </style>
