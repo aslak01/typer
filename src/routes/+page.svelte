@@ -7,7 +7,7 @@
   // let isVisible = false;
 </script>
 
-<a href="/type">Type</a>
+<a href="/typer">Type</a>
 
 <style>
   /* :global(body) { */
