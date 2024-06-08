@@ -2,6 +2,7 @@
   import { error } from "@sveltejs/kit";
   let { data } = $props();
   let { chapter } = data;
+  import create_timer from "$lib/stores/timer.svelte";
 
   import Game from "./game/Game.svelte";
   import PadderParser from "./game/PadderParser.svelte";
@@ -14,6 +15,9 @@
     const LNS = 4;
     return TMP_WPL * TMP_CPW * LNS;
   }
+
+  let typing = $state(false);
+  let typing_timer = create_timer();
 
   function createGameState(pages: string) {
     const pageLenMax = getLines();
@@ -74,16 +78,25 @@
 
   const gameState = chapter && createGameState(chapter.pages);
 
+  let typedTime = $derived.by(() => {
+    let time = 0;
+    if (!gameState?.mode) return time;
+    console.log(gameState.mode);
+    if (gameState.mode.toUpperCase() === "I") {
+      time = typing_timer.value;
+    }
+    return time;
+  });
+
   let playerState = $state({
     activeBook: "",
     activeBooks: [],
   });
 </script>
 
-<StatusBar wpm={10} acc={87} />
-
 <div class="game-container">
-  {#if chapter && gameState}
+  {#if chapter && gameState?.mode}
+    <StatusBar wpm={10} acc={87} time={typedTime} mode={gameState.mode} />
     <header>
       <h1>{chapter.title}</h1>
     </header>

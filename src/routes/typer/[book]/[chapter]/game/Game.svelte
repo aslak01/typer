@@ -32,7 +32,6 @@
 
   function handleKeydown(e: KeyboardEvent) {
     const { key } = e;
-    const hasShift = e.getModifierState("Shift");
 
     function isInput(inp: string): boolean {
       return (
