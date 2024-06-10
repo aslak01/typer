@@ -1,61 +1,67 @@
 <script lang="ts">
   let {
     chapter,
-    mode,
     nextPage,
-  }: { chapter: string; mode: string; nextPage: () => void } = $props();
+  }: {
+    chapter: string;
+    nextPage: () => void;
+  } = $props();
+
+  import { gameState } from "./state.svelte";
+
   let curr = $state(0);
-  let isTyping = $state(false);
-  let typingTimeout: number | undefined;
-  let typingInterval: number | undefined;
   let typed = $state("");
-  let time = $state(0);
-
+  let deltas: number[] = $state([]);
+  const avgOfDeltas = $derived(
+    deltas.reduce((acc, curr) => acc + curr, 0) / deltas.length || 1,
+  );
   let currLen = $derived(chapter.length);
+  let lastTimestamp = 0;
 
-  function setTypingStatus(bool: boolean) {
-    clearTimeout(typingTimeout);
+  let game: HTMLElement | null = null;
+
+  let typingInterval: number | undefined;
+
+  function setTypingStatus(typing: boolean) {
     clearInterval(typingInterval);
-    isTyping = true;
 
-    function incrementTime() {
-      time += 10;
+    if (typing) {
+      function incrementTime() {
+        gameState.time += 10;
+      }
+      typingInterval = setInterval(incrementTime, 10);
     }
-    typingInterval = setInterval(incrementTime, 10);
+  }
 
-    typingTimeout = setTimeout(() => {
-      isTyping = false;
-      time = -3000;
-      clearInterval(typingInterval);
-    }, 3000);
+  function isInput(inp: string): boolean {
+    return (
+      inp.length === 1 ||
+      inp === "Enter" ||
+      inp === "Tab" ||
+      inp === "Backspace"
+    );
+  }
+
+  function isInsert(m: string) {
+    return m.toLowerCase() === "i";
   }
 
   function handleKeydown(e: KeyboardEvent) {
     const { key } = e;
 
-    function isInput(inp: string): boolean {
-      return (
-        inp.length === 1 ||
-        inp === "Enter" ||
-        inp === "Tab" ||
-        inp === "Backspace"
-      );
-    }
-    function isInsertMode(m: string) {
-      return m.toLowerCase() === "i";
-    }
+    const isInsertMode = isInsert(gameState.mode);
 
-    if (!isInsertMode(mode)) {
-      if (key.toLowerCase() === "i") {
-        mode = "I";
+    if (!isInsertMode) {
+      if (isInsert(key)) {
+        gameState.mode = "I";
         setTypingStatus(true);
         return;
       }
     }
 
-    if (isInsertMode(mode)) {
+    if (isInsertMode) {
       if (key === "Escape") {
-        mode = "N";
+        gameState.mode = "N";
         setTypingStatus(false);
         return;
       }
@@ -66,7 +72,9 @@
       }
     }
 
-    if (!isInput(key) || !isInsertMode(mode)) {
+    const keyIsInput = isInput(key);
+
+    if (!keyIsInput || !isInsertMode) {
       return;
     }
 
@@ -86,15 +94,28 @@
     if (key === "Tab") {
       inserted = "→";
     }
-    typed += inserted;
-    curr++;
+    const target = chapter[curr];
+    const isCorrect = matches(inserted, target);
 
-    if (curr >= currLen) {
-      console.log("YOU DID IT");
+    if (curr < currLen) {
+      typed += inserted;
+      curr++;
+    }
+
+    if (isCorrect) {
+      const delta = gameState.time - lastTimestamp;
+      deltas.push(delta);
+      lastTimestamp = gameState.time;
+    }
+
+    if (curr >= currLen && isCorrect) {
+      const acc = getAcc(typed, chapter);
+      console.log(acc);
       typed = "";
       curr = 0;
+      deltas = [];
+      lastTimestamp = gameState.time;
       nextPage();
-      return;
     }
   }
 
@@ -111,19 +132,29 @@
     return input.replace(/[‘’“”–—]/g, (match) => replacements[match] || match);
   }
 
+  function getAcc(str1: string, str2: string) {
+    if (str1.length !== str2.length) {
+      throw new Error("Strings must be of the same length");
+    }
+    const matchCount = str1
+      .split("")
+      .filter((char, index) => char === str2[index]).length;
+    const percentageMatch = (matchCount / str1.length) * 100;
+    return percentageMatch;
+  }
+
   function matches(input: string, tar: string) {
     if (!input || !tar) return false;
     const match = input === replaceSpecialChars(tar);
     return match;
   }
-  let game: HTMLElement | null = null;
   $effect(() => {
     if (!game) return;
-    if (mode === "I") {
+    if (gameState.mode === "I") {
       game.setAttribute("tabindex", "-1");
       game.focus();
     }
-    if (mode === "N") {
+    if (gameState.mode === "N") {
       game.setAttribute("tabindex", "0");
       game.blur();
     }
@@ -132,7 +163,10 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div bind:this={game} class="text-zone {mode === 'I' ? 'active' : ''}">
+<div
+  bind:this={game}
+  class="text-zone {gameState.mode === 'I' ? 'active' : ''}"
+>
   <div class="text-area">
     {#each chapter as letter, i}
       {@const active = i === typed.length}
@@ -153,7 +187,7 @@
         {:else if typed[i] === " "}
           ·
         {:else}
-          {typed[i]}
+          {typed[i]}&shy;
         {/if}
       </span>
     {/each}

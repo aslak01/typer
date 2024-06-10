@@ -1,24 +1,19 @@
 <script lang="ts">
-  let {
-    wpm = 0,
-    acc = 0,
-    time = 0,
-    mode = "N",
-  }: { wpm: number; acc: number; time: number; mode: string } = $props();
+  let { gameState }: { gameState: any } = $props();
 </script>
 
 <div class="bar">
   <div class="entry">
-    Time: <b>{time}</b>
+    Time: <b>{gameState.time}</b>
   </div>
+  <!-- <div class="entry"> -->
+  <!--   WPM <b>{wpm}</b> -->
+  <!-- </div> -->
+  <!-- <div class="entry"> -->
+  <!--   Accuracy <b>{acc}</b> % -->
+  <!-- </div> -->
   <div class="entry">
-    WPM <b>{wpm}</b>
-  </div>
-  <div class="entry">
-    Accuracy <b>{acc}</b> %
-  </div>
-  <div class="entry">
-    mode <b>{mode}</b>
+    mode <b>{gameState.mode}</b>
   </div>
 </div>
 
