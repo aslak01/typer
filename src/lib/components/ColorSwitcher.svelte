@@ -3,12 +3,12 @@
   // import { fade, scale } from "svelte/transition";
 
   import SunAndMoon from "$lib/components/icons/SunAndMoon.svelte";
-  import { onMount } from "svelte";
+  // import { onMount } from "svelte";
 
   let nextTheme: string;
   let requestsDark: boolean;
 
-  onMount(() => {});
+  // onMount(() => {});
 
   let htmlBody: Element | null;
 
@@ -41,23 +41,17 @@
 
 <style>
   .hoverzone {
-    display: block;
-    position: fixed;
-    right: var(--space-sm);
-    z-index: 10;
+    margin-left: auto;
+    padding: var(--space-sm);
   }
-  @media (--lg-n-above) {
-    .hoverzone {
-      top: var(--space-normal);
-      bottom: unset;
-    }
-  }
-  @media (--lg-n-below) {
-    .hoverzone {
-      top: unset;
-      bottom: var(--space-sm);
-    }
-  }
+  /* @media (--lg-n-above) { */
+  /* } */
+  /* @media (--lg-n-below) { */
+  /*   .hoverzone { */
+  /*     top: unset; */
+  /*     bottom: var(--space-sm); */
+  /*   } */
+  /* } */
 
   /* button { */
   /*   background: transparent; */

@@ -9,15 +9,10 @@
   import StatusBar from "./game/StatusBar.svelte";
 
   const chapterState = chapter && createChapterState(chapter.pages);
-
-  let playerState = $state({
-    activeBook: "",
-    activeBooks: [],
-  });
 </script>
 
 <div class="game-container">
-  {#if chapter && gameState?.mode}
+  {#if chapterState}
     <StatusBar {gameState} />
     <header>
       <h1>{chapter.title}</h1>
