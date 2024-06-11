@@ -15,6 +15,12 @@
   <div class="entry">
     mode <b>{gameState.mode}</b>
   </div>
+  <div class="entry">
+    wpm <b>{gameState.wpm}</b>
+  </div>
+  <div class="entry">
+    acc <b>{gameState.acc}</b>
+  </div>
 </div>
 
 <style>

@@ -109,12 +109,14 @@
     }
 
     if (curr >= currLen && isCorrect) {
-      const acc = getAcc(typed, chapter);
+      const acc = getAccuracy(typed, chapter);
       console.log(acc);
+      gameState.acc = acc;
       typed = "";
       curr = 0;
       deltas = [];
       lastTimestamp = gameState.time;
+      gameState.typed += chapter.length;
       nextPage();
     }
   }
@@ -132,7 +134,7 @@
     return input.replace(/[‘’“”–—]/g, (match) => replacements[match] || match);
   }
 
-  function getAcc(str1: string, str2: string) {
+  function getAccuracy(str1: string, str2: string) {
     if (str1.length !== str2.length) {
       throw new Error("Strings must be of the same length");
     }

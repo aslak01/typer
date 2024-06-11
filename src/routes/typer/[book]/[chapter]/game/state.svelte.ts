@@ -60,6 +60,20 @@ export function createChapterState(pages: string) {
 function createGameState() {
   let time = $state(0);
   let mode = $state("N");
+  // typed length in chars
+  let typed = $state(0);
+  const wpm = $derived.by(() => {
+    const words = typed / 5;
+    const minutes = time / 10 / 60;
+    return Math.round(words / minutes);
+  });
+  let accuracyArr: number[] = $state([]);
+  const acc = $derived.by(() => {
+    return Math.round(
+      accuracyArr.reduce((acc, curr) => acc + curr, 0) / accuracyArr.length ||
+      1,
+    );
+  });
   return {
     get mode() {
       return mode;
@@ -72,6 +86,21 @@ function createGameState() {
     },
     set time(t: number) {
       time = t;
+    },
+    get typed() {
+      return time;
+    },
+    set typed(t: number) {
+      typed = t;
+    },
+    get wpm() {
+      return wpm;
+    },
+    set acc(a: number) {
+      accuracyArr.push(a);
+    },
+    get acc() {
+      return acc;
     },
   };
 }
