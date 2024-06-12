@@ -11,6 +11,7 @@
 
   let curr = $state(0);
   let typed = $state("");
+  let misclicks = $state(0);
   let deltas: number[] = $state([]);
   const avgOfDeltas = $derived(
     deltas.reduce((acc, curr) => acc + curr, 0) / deltas.length || 1,
@@ -102,6 +103,10 @@
       curr++;
     }
 
+    if (!isCorrect) {
+      misclicks++;
+    }
+
     if (isCorrect) {
       const delta = gameState.time - lastTimestamp;
       deltas.push(delta);
@@ -110,14 +115,19 @@
 
     if (curr >= currLen && isCorrect) {
       const acc = getAccuracy(typed, chapter);
-      console.log(acc);
+      const realAcc = 100 - (misclicks / chapter.length) * 100;
+
+      gameState.realAcc = realAcc > 0 ? realAcc : 0;
       gameState.acc = acc;
-      typed = "";
-      curr = 0;
-      deltas = [];
       lastTimestamp = gameState.time;
       gameState.typed += chapter.length;
       gameState.lastTime = gameState.time;
+
+      misclicks = 0;
+      typed = "";
+      curr = 0;
+      deltas = [];
+
       nextPage();
     }
   }

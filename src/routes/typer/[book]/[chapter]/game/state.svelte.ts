@@ -65,9 +65,7 @@ function createGameState() {
   let lastTime = $state(0);
   const wpm = $derived.by(() => {
     const words = typed / 5;
-    console.log(words);
     const minutes = lastTime / 1000 / 60;
-    console.log(minutes);
     const wpm = words / minutes;
     return !wpm || isNaN(wpm) ? "-" : wpm.toFixed(0);
   });
@@ -75,6 +73,12 @@ function createGameState() {
   const acc = $derived.by(() => {
     const acc =
       accuracyArr.reduce((acc, curr) => acc + curr, 0) / accuracyArr.length;
+    return !acc || isNaN(acc) ? "-" : acc.toFixed(0);
+  });
+  let realAccArr: number[] = $state([]);
+  const realAcc = $derived.by(() => {
+    const acc =
+      realAccArr.reduce((acc, curr) => acc + curr, 0) / accuracyArr.length;
     return !acc || isNaN(acc) ? "-" : acc.toFixed(0);
   });
   return {
@@ -110,6 +114,12 @@ function createGameState() {
     },
     get acc(): number | string {
       return acc;
+    },
+    set realAcc(a: number) {
+      realAccArr.push(a);
+    },
+    get realAcc(): number | string {
+      return realAcc;
     },
   };
 }
