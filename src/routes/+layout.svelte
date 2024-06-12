@@ -4,13 +4,21 @@
   import StatusBar from "$lib/components/StatusBar.svelte";
   let { children }: { children: Snippet } = $props();
   import { page } from "$app/stores";
+  import { bookIndex } from "$lib/data/books";
 </script>
 
 <main>
   <StatusBar>
     <h1><a href="/">typer</a></h1>
-    {JSON.stringify($page.route)}
-    {JSON.stringify($page.params)}
+    {#if "book" in $page.params}
+      {@const book = bookIndex.find((b) => b.path === $page.params.book)}
+      {#if book}
+        <a href={`/typer/${book.path}`}>{book.title}</a>
+      {/if}
+    {/if}
+    {#if "chapter" in $page.params}
+      chapter {$page.params.chapter}
+    {/if}
   </StatusBar>
   {@render children()}
 </main>
@@ -22,8 +30,8 @@
   h1 {
     font-size: 1rem;
   }
-  h1 a,
-  h1 a:hover {
+  a,
+  a:hover {
     color: unset;
     text-decoration: unset;
   }

@@ -14,9 +14,6 @@
 <div class="game-container">
   {#if chapterState}
     <StatusBar {gameState} />
-    <header>
-      <h1>{chapter.title}</h1>
-    </header>
     <div class="text-container">
       <div class="section-wrapper">
         <PadderParser text={chapterState.aboveContent} fade={true} pos="top" />
@@ -43,9 +40,6 @@
     letter-spacing: var(--font-letterspacing-2);
     line-height: var(--font-lineheight-4);
     font-weight: var(--font-weight-5);
-  }
-  header h1 {
-    font-size: var(--font-size-4);
   }
   .text-container {
     display: grid;

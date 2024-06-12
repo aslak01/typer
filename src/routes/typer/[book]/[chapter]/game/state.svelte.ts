@@ -62,17 +62,20 @@ function createGameState() {
   let mode = $state("N");
   // typed length in chars
   let typed = $state(0);
+  let lastTime = $state(0);
   const wpm = $derived.by(() => {
     const words = typed / 5;
-    const minutes = time / 10 / 60;
-    return Math.round(words / minutes);
+    console.log(words);
+    const minutes = lastTime / 1000 / 60;
+    console.log(minutes);
+    const wpm = words / minutes;
+    return !wpm || isNaN(wpm) ? "-" : wpm.toFixed(0);
   });
   let accuracyArr: number[] = $state([]);
   const acc = $derived.by(() => {
-    return Math.round(
-      accuracyArr.reduce((acc, curr) => acc + curr, 0) / accuracyArr.length ||
-      1,
-    );
+    const acc =
+      accuracyArr.reduce((acc, curr) => acc + curr, 0) / accuracyArr.length;
+    return !acc || isNaN(acc) ? "-" : acc.toFixed(0);
   });
   return {
     get mode() {
@@ -88,18 +91,24 @@ function createGameState() {
       time = t;
     },
     get typed() {
-      return time;
+      return typed;
     },
     set typed(t: number) {
       typed = t;
     },
+    get lastTime() {
+      return lastTime;
+    },
+    set lastTime(t: number) {
+      lastTime = t;
+    },
     get wpm() {
-      return wpm;
+      return wpm || "-";
     },
     set acc(a: number) {
       accuracyArr.push(a);
     },
-    get acc() {
+    get acc(): number | string {
       return acc;
     },
   };

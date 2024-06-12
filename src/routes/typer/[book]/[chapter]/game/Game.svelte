@@ -117,6 +117,7 @@
       deltas = [];
       lastTimestamp = gameState.time;
       gameState.typed += chapter.length;
+      gameState.lastTime = gameState.time;
       nextPage();
     }
   }

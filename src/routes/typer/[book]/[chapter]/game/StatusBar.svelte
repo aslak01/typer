@@ -6,12 +6,6 @@
   <div class="entry">
     Time: <b>{gameState.time}</b>
   </div>
-  <!-- <div class="entry"> -->
-  <!--   WPM <b>{wpm}</b> -->
-  <!-- </div> -->
-  <!-- <div class="entry"> -->
-  <!--   Accuracy <b>{acc}</b> % -->
-  <!-- </div> -->
   <div class="entry">
     mode <b>{gameState.mode}</b>
   </div>
