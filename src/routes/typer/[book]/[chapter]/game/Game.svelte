@@ -178,7 +178,7 @@
 
 <div
   bind:this={game}
-  class="text-zone {gameState.mode === 'I' ? 'active' : ''}"
+  class="text-zone {gameState.mode === 'I' ? 'inserting' : ''}"
 >
   <div class="text-area">
     {#each chapter as letter, i}
@@ -191,9 +191,9 @@
           {#if letter === " "}
             &ensp;
           {:else if letter === "↪"}
-            ↪<br />
+            <span class="cr spchar">↪</span><br />
           {:else if letter === "→"}
-            <span class="tab">→</span>
+            <span class="tab spchar">→</span>
           {:else}
             {letter}
           {/if}
@@ -209,31 +209,44 @@
 
 <style>
   .text-zone {
-    padding-inline: 1ch;
-    height: 100%;
     display: flex;
-    align-items: center;
   }
-  .text-zone.active {
+  .text-area {
+    z-index: 10;
+    padding-inline: 1ch;
+    background-color: var(--surface1);
+  }
+  .inserting .text-area {
     background: var(--surface3);
   }
   .text-zone:focus-within {
     outline: none;
   }
 
+  .spchar {
+    background: var(--surface3);
+    border-radius: 5px;
+    padding-inline: 2px;
+    margin-inline: 0.5ch;
+  }
+  .text-zone.inserting .spchar {
+    background: var(--surface4);
+  }
+  .text-zone .correct .spchar {
+    color: var(--surface1);
+  }
+  .text-zone.inserting .correct .spchar {
+    background: var(--text-faded);
+    color: var(--surface3);
+  }
   .tab {
-    padding-inline: 1ch;
+    padding-inline: 0.5ch;
   }
   .correct {
     color: var(--text-faded);
   }
-  /* .active { */
-  /*   background-color: var(--yellow-4); */
-  /*   color: var(--gray-10); */
-  /* } */
   .wrong {
-    color: var(--text-faded);
-    /* color: var(--red-3); */
+    color: var(--red-5);
     text-decoration-line: underline;
     text-decoration-style: solid;
     text-decoration-color: var(--red-5);
