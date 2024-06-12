@@ -222,6 +222,9 @@
   .text-zone:focus-within {
     outline: none;
   }
+  .text-zone.inserting {
+    word-break: break-word;
+  }
 
   .spchar {
     background: var(--surface3);
@@ -250,5 +253,10 @@
     text-decoration-line: underline;
     text-decoration-style: solid;
     text-decoration-color: var(--red-5);
+  }
+  .inserting .active::before {
+    content: "";
+    outline: 1px solid var(--yellow-6);
+    white-space: pre;
   }
 </style>
