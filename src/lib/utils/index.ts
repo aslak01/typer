@@ -22,10 +22,15 @@ export function sliceAtNearestSpace(str: string) {
   const threshold = 40;
   const lastSpaceIndex = str.lastIndexOf(" ");
   const lastSeparatorIndex = lastIndexOfSeparator(str);
-  console.log("last space", lastSpaceIndex, "lastSep", lastSeparatorIndex);
+  const lastLinebreakIndex = str.lastIndexOf("↪");
+  const breaks = [lastSpaceIndex, lastSeparatorIndex, lastLinebreakIndex];
 
-  if (lastSpaceIndex === -1 && lastSeparatorIndex === -1) {
+  if (breaks.every((b) => b === -1)) {
     return str;
+  }
+
+  if (lastLinebreakIndex !== -1) {
+    return str.slice(0, lastLinebreakIndex + 1);
   }
 
   if (lastSeparatorIndex === -1) {
