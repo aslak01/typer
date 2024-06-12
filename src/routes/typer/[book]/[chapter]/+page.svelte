@@ -34,7 +34,7 @@
 
 <style>
   .game-container {
-    height: 100dvh;
+    height: calc(100% - var(--header-height));
     padding: 1rem;
     font-size: var(--font-size-4);
     letter-spacing: var(--font-letterspacing-2);

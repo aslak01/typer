@@ -12,6 +12,7 @@
 
 <style>
   .bar {
+    height: var(--header-height);
     background-color: var(--surface3);
     display: flex;
     align-items: center;

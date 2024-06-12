@@ -44,6 +44,8 @@ html {
 
   --max-width: calc(var(--size-content-3) * 2);
 
+  --header-height: 1.2lh;
+
   /* font */
   --font-base: var(--font-size-1);
   --font-lg: var(--font-size-3);
