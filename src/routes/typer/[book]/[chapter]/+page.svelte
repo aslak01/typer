@@ -1,32 +1,50 @@
 <script lang="ts">
   let { data } = $props();
   let { chapter } = data;
+  let pages = chapter?.pages || [];
 
-  import { createChapterState, gameState } from "./game/state.svelte";
+  import { chapterState, gameState } from "./game/state.svelte";
 
   import Game from "./game/Game.svelte";
   import PadderParser from "./game/PadderParser.svelte";
   import StatusBar from "./game/StatusBar.svelte";
 
-  const chapterState = chapter && createChapterState(chapter.pages);
+  let page = $derived.by(() => {
+    if (!chapter) return "";
+    return pages[chapterState.page];
+  });
+  let prevPage = $derived.by(() => {
+    if (!chapter) return "";
+    const prevPage = pages[chapterState.page - 1];
+    if (!prevPage) return "";
+    return prevPage;
+  });
+  let nextPage = $derived.by(() => {
+    if (!chapter) return "";
+    const nextPage = pages[chapterState.page + 1];
+    if (!nextPage) return "";
+    return nextPage;
+  });
 </script>
 
 <div class="game-container">
   {#if chapterState}
-    <StatusBar {gameState} />
+    <StatusBar
+      {gameState}
+      skip={chapterState.turnPage}
+      page={chapterState.page}
+      chapLen={pages.length}
+    />
     <div class="text-container">
       <div class="section-wrapper">
-        <PadderParser text={chapterState.aboveContent} fade={true} pos="top" />
+        <PadderParser text={prevPage} fade={true} pos="top" />
       </div>
 
       <div class="section-wrapper">
-        <Game
-          chapter={chapterState.activePage}
-          nextPage={chapterState.turnPage}
-        />
+        <Game chapter={page} nextPage={chapterState.turnPage} />
       </div>
       <div class="section-wrapper">
-        <PadderParser text={chapterState.belowContent} fade={false} pos="bot" />
+        <PadderParser text={nextPage} fade={false} pos="bot" />
       </div>
     </div>
   {/if}
@@ -54,7 +72,7 @@
   }
   .section-wrapper {
     display: flex;
-    align-items: start;
+    align-items: center;
     position: relative;
   }
 </style>

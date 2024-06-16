@@ -1,5 +1,11 @@
 <script lang="ts">
-  let { gameState }: { gameState: any } = $props();
+  let {
+    gameState,
+    skip,
+    page,
+    chapLen,
+  }: { gameState: any; skip: () => void; page: number; chapLen: number } =
+    $props();
   let extras = $state(false);
 </script>
 
@@ -12,6 +18,12 @@
       mode <b>{gameState.mode}</b>
     </div>
   {/if}
+  <div class="entry">
+    P {page} / {chapLen}
+  </div>
+  <div class="entry">
+    <button onclick={() => skip()}>Skip</button>
+  </div>
   <div class="entry">
     wpm <b>{gameState.wpm}</b>
   </div>
@@ -38,5 +50,8 @@
   }
   .right {
     margin-left: auto;
+  }
+  button {
+    padding: 0;
   }
 </style>

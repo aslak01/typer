@@ -19,7 +19,7 @@ const lastIndexOfSeparator = lastIndexOfSymbols([
 ]);
 
 export function sliceAtNearestSpace(str: string) {
-  const threshold = 40;
+  const threshold = 200;
   const lastSpaceIndex = str.lastIndexOf(" ");
   const lastSeparatorIndex = lastIndexOfSeparator(str);
   const lastLinebreakIndex = str.lastIndexOf("↪");

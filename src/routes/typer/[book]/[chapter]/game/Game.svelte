@@ -254,8 +254,15 @@
     text-decoration-style: solid;
     text-decoration-color: var(--red-5);
   }
+  .inserting .active {
+    position: relative;
+  }
   .inserting .active::before {
     content: "";
+    position: absolute;
+    height: 0.6lh;
+    left: -3px;
+    top: 0.04lh;
     outline: 1px solid var(--yellow-6);
     white-space: pre;
   }
