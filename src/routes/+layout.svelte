@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
+  let { children }: { children: Snippet } = $props();
   import "../app.css";
   import StatusBar from "$lib/components/StatusBar.svelte";
-  let { children }: { children: Snippet } = $props();
   import { page } from "$app/stores";
   import { bookIndex } from "$lib/data/books";
   import { gameState } from "./typer/[book]/[chapter]/game/state.svelte";

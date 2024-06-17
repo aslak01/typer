@@ -3,7 +3,8 @@
   let { chapter } = data;
   let pages = chapter?.pages || [];
 
-  import { chapterState, gameState } from "./game/state.svelte";
+  import { createChapterState, gameState } from "./game/state.svelte";
+  let chapterState = $state(createChapterState(pages.length));
 
   import Game from "./game/Game.svelte";
   import PadderParser from "./game/PadderParser.svelte";
@@ -29,12 +30,7 @@
 
 <div class="game-container">
   {#if chapterState}
-    <StatusBar
-      {gameState}
-      skip={chapterState.turnPage}
-      page={chapterState.page}
-      chapLen={pages.length}
-    />
+    <StatusBar {gameState} {chapterState} chapLen={pages.length} />
     <div class="text-container">
       <div class="section-wrapper">
         <PadderParser text={prevPage} fade={true} pos="top" />
