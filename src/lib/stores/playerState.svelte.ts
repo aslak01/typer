@@ -15,14 +15,13 @@ type Book = {
 import { localStore } from "./useLocalStorage.svelte";
 
 function createPlayerState() {
-  let activeBook = localStore("activeBook", null);
+  let activeBook = $state(localStore("activeBook", null));
+  let activeBooks = $state(localStore("activeBooks", []));
   //let activeBook: Book | null = $state(activeBookLocal.value);
-  let activeBooks = localStore("activeBooks", []);
   //let activeBooks: Book[] = $state([]);
-  //
   return {
     get activeBook(): Book | null {
-      return activeBook.value || null;
+      return activeBook.value;
     },
     set activeBook(b: Book) {
       localStore("activeBook", b);

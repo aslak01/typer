@@ -30,9 +30,32 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       throw new Error(`Malformed chapter`);
     }
     const pages = splitChapterInPages(chapter.pages);
-    const pageAmt = pages.length;
+    // type Book = {
+    //   title: string;
+    //   slug: string;
+    //   chapters: Chapter[];
+    //   chapsComplete: number;
+    // };
+    // type Chapter = {
+    //   title: string;
+    //   slug: string;
+    //   completedPages: number;
+    //   totalPages: number;
+    // };
+    const book = {
+      title: currentBook.title,
+      slug: currentBook.path,
+      chapters: chapters.map((c, i) => ({
+        title: c.title,
+        slug: i + 1,
+        completedPages: 0,
+        totalPages: pages.length,
+      })),
+      chapsComplete: 0,
+    };
     return {
-      chapter: { ...chapter, pages, len: pageAmt },
+      book,
+      chapter: { ...chapter, pages },
     };
   } catch (error) {
     console.error(error);

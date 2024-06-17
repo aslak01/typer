@@ -1,8 +1,9 @@
 <script lang="ts">
   let { data } = $props();
-  let { chapter } = data;
+  let { chapter, book } = data;
   let pages = chapter?.pages || [];
 
+  import { localStore } from "$lib/stores/useLocalStorage.svelte";
   import { createChapterState, gameState } from "./game/state.svelte";
   let chapterState = $state(createChapterState(pages.length));
 
@@ -26,6 +27,12 @@
     if (!nextPage) return "";
     return nextPage;
   });
+
+  $effect(() => {
+    if (book) {
+      localStore("activeBook", book);
+    }
+  });
 </script>
 
 <div class="game-container">
@@ -37,7 +44,7 @@
       </div>
 
       <div class="section-wrapper">
-        <Game chapter={page} nextPage={chapterState.turnPage} />
+        <Game chapter={page} nextPage={chapterState.nextPage} />
       </div>
       <div class="section-wrapper">
         <PadderParser text={nextPage} fade={false} pos="bot" />
