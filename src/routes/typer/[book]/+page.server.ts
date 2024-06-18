@@ -5,9 +5,11 @@ import type { PageServerLoad } from "./$types";
 export const load: PageServerLoad = async ({ params, fetch }) => {
   try {
     const currentBook = bookIndex.find((book) => book.path === params.book);
+    console.log(params.book);
     if (!currentBook) {
       throw new Error(`Invalid book, ${params.book}`);
     }
+    // TODO: generalise
     const textPath = `/books/${currentBook.path}/${currentBook.parts[1].filename}`;
     const response = await fetch(textPath);
 
