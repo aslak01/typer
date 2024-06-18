@@ -1,6 +1,7 @@
 import { getChapters } from "$lib/server/book";
 import { bookIndex } from "$lib/data/books/index";
 import type { PageServerLoad } from "./$types";
+import { splitChapterInPages } from "$lib/utils/bookFuncs";
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
   try {
@@ -21,8 +22,35 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       throw new Error(`Malformed fetched book`);
     }
     const chapters = getChapters(text);
+
+    // type Book = {
+    //   title: string;
+    //   slug: string;
+    //   chapters: Chapter[];
+    //   chapsComplete: number;
+    // };
+    // type Chapter = {
+    //   title: string;
+    //   slug: string;
+    //   completedPages: number;
+    //   totalPages: number;
+    // };
+
+    const book = {
+      title: currentBook.title,
+      slug: currentBook.path,
+      chapters: chapters.map((c, i) => ({
+        title: c.title,
+        slug: i + 1,
+        completedPages: 0,
+        totalPages: splitChapterInPages(c.pages).length,
+      })),
+      chapsComplete: 0,
+    };
+
     return {
       bookMeta: currentBook,
+      book,
       chapters,
     };
   } catch (error) {

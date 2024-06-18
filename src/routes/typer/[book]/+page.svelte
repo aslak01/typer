@@ -1,7 +1,12 @@
 <script lang="ts">
-  let { data } = $props();
+  let { data, book } = $props();
   let { bookMeta, chapters } = data;
-  // import { playerState } from "$lib/stores/playerState.svelte";
+  import { playerState } from "$lib/stores/playerState.svelte";
+  import { onMount } from "svelte";
+
+  onMount(() => {
+    playerState.activeBook = book;
+  });
 </script>
 
 {#if bookMeta && chapters}
