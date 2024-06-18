@@ -5,7 +5,7 @@
   import StatusBar from "$lib/components/StatusBar.svelte";
   import { page } from "$app/stores";
   import { bookIndex } from "$lib/data/books";
-  import { gameState } from "./typer/[book]/[chapter]/game/state.svelte";
+  import { gameState } from "$lib/stores/gameState.svelte";
 </script>
 
 <main>

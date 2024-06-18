@@ -1,13 +1,13 @@
 <script lang="ts">
   let {
-    chapter,
+    page,
     nextPage,
   }: {
-    chapter: string;
+    page: string;
     nextPage: () => void;
   } = $props();
 
-  import { gameState } from "./state.svelte";
+  import { gameState } from "$lib/stores/gameState.svelte";
 
   let curr = $state(0);
   let typed = $state("");
@@ -16,7 +16,7 @@
   const avgOfDeltas = $derived(
     deltas.reduce((acc, curr) => acc + curr, 0) / deltas.length || 1,
   );
-  let currLen = $derived(chapter.length);
+  let currLen = $derived(page.length);
   let lastTimestamp = 0;
 
   let game: HTMLElement | null = null;
@@ -95,7 +95,7 @@
     if (key === "Tab") {
       inserted = "→";
     }
-    const target = chapter[curr];
+    const target = page[curr];
     const isCorrect = matches(inserted, target);
 
     if (curr < currLen) {
@@ -114,13 +114,13 @@
     }
 
     if (curr >= currLen && isCorrect) {
-      const acc = getAccuracy(typed, chapter);
-      const realAcc = 100 - (misclicks / chapter.length) * 100;
+      const acc = getAccuracy(typed, page);
+      const realAcc = 100 - (misclicks / page.length) * 100;
 
       gameState.realAcc = realAcc > 0 ? realAcc : 0;
       gameState.acc = acc;
       lastTimestamp = gameState.time;
-      gameState.typed += chapter.length;
+      gameState.typed += page.length;
       gameState.lastTime = gameState.time;
 
       misclicks = 0;
@@ -161,17 +161,17 @@
     const match = input === replaceSpecialChars(tar);
     return match;
   }
-  $effect(() => {
-    if (!game) return;
-    if (gameState.mode === "I") {
-      game.setAttribute("tabindex", "-1");
-      game.focus();
-    }
-    if (gameState.mode === "N") {
-      game.setAttribute("tabindex", "0");
-      game.blur();
-    }
-  });
+  // $effect(() => {
+  //   if (!game) return;
+  //   if (gameState.mode === "I") {
+  //     game.setAttribute("tabindex", "-1");
+  //     game.focus();
+  //   }
+  //   if (gameState.mode === "N") {
+  //     game.setAttribute("tabindex", "0");
+  //     game.blur();
+  //   }
+  // });
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -181,9 +181,9 @@
   class="text-zone {gameState.mode === 'I' ? 'inserting' : ''}"
 >
   <div class="text-area">
-    {#each chapter as letter, i}
+    {#each page as letter, i}
       {@const active = i === typed.length}
-      {@const correct = matches(typed[i], chapter[i])}
+      {@const correct = matches(typed[i], page[i])}
       {@const attempted = typed.length > i}
       {@const wrong = attempted && !correct}
       <span class:correct class:wrong class:active>

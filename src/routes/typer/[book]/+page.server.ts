@@ -15,13 +15,11 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       throw new Error(`HTTP error: ${response.status}`);
     }
     const text = await response.text();
-    console.log(text);
     if (typeof text !== "string") {
       throw new Error(`Malformed fetched book`);
     }
     const chapters = getChapters(text);
     return {
-      params,
       bookMeta: currentBook,
       chapters,
     };

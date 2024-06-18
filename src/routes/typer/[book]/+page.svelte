@@ -1,7 +1,7 @@
 <script lang="ts">
   let { data } = $props();
   let { bookMeta, chapters } = data;
-  import { playerState } from "$lib/stores/playerState.svelte";
+  // import { playerState } from "$lib/stores/playerState.svelte";
 </script>
 
 {#if bookMeta && chapters}

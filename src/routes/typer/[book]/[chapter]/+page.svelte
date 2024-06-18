@@ -3,13 +3,15 @@
   let { chapter, book } = data;
   let pages = chapter?.pages || [];
 
-  import { localStore } from "$lib/stores/useLocalStorage.svelte";
-  import { createChapterState, gameState } from "./game/state.svelte";
+  // import { localStore } from "$lib/stores/useLocalStorage.svelte";
+  import { gameState } from "$lib/stores/gameState.svelte";
+  import { createChapterState } from "$lib/stores/chapterState.svelte";
   let chapterState = $state(createChapterState(pages.length));
 
   import Game from "./game/Game.svelte";
   import PadderParser from "./game/PadderParser.svelte";
   import StatusBar from "./game/StatusBar.svelte";
+  import { browser } from "$app/environment";
 
   let page = $derived.by(() => {
     if (!chapter) return "";
@@ -28,15 +30,14 @@
     return nextPage;
   });
 
-  $effect(() => {
-    if (book) {
-      localStore("activeBook", book);
-    }
-  });
+  // $effect(() => {
+  //   console.log("hei");
+  //   //localStore("activeBook", book);
+  // });
 </script>
 
 <div class="game-container">
-  {#if chapterState}
+  {#if chapterState && page}
     <StatusBar {gameState} {chapterState} chapLen={pages.length} />
     <div class="text-container">
       <div class="section-wrapper">
@@ -44,7 +45,7 @@
       </div>
 
       <div class="section-wrapper">
-        <Game chapter={page} nextPage={chapterState.nextPage} />
+        <Game {page} nextPage={chapterState.nextPage} />
       </div>
       <div class="section-wrapper">
         <PadderParser text={nextPage} fade={false} pos="bot" />

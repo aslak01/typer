@@ -1,6 +1,7 @@
+import type { PageServerLoad } from "./$types";
+
 import { getChapters } from "$lib/server/book";
 import { bookIndex } from "$lib/data/books/index";
-import type { PageServerLoad } from "./$types";
 import { sliceAtNearestSpace } from "$lib/utils";
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
