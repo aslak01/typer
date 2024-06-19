@@ -8,29 +8,21 @@
   } = $props();
 
   import { gameState } from "$lib/stores/gameState.svelte";
+  import { createPageState } from "$lib/stores/pageState.svelte";
 
-  let curr = $state(0);
-  let typed = $state("");
-  let misclicks = $state(0);
-  let deltas: number[] = $state([]);
-  const avgOfDeltas = $derived(
-    deltas.reduce((acc, curr) => acc + curr, 0) / deltas.length || 1,
-  );
-  let currLen = $derived(page.length);
-  let lastTimestamp = 0;
+  let pageLength = $derived(page.length);
+  let pageState = createPageState(page);
 
   let game: HTMLElement | null = null;
 
-  let typingInterval: number | undefined;
-
   function setTypingStatus(typing: boolean) {
-    clearInterval(typingInterval);
+    clearInterval(pageState.typingInterval);
 
     if (typing) {
       function incrementTime() {
         gameState.time += 10;
       }
-      typingInterval = setInterval(incrementTime, 10);
+      pageState.typingInterval = setInterval(incrementTime, 10);
     }
   }
 
@@ -80,9 +72,9 @@
     }
 
     if (key === "Backspace") {
-      if (typed.length > 0) {
-        typed = typed.slice(0, -1);
-        curr--;
+      if (pageState.typed.length > 0) {
+        pageState.typed = pageState.typed.slice(0, -1);
+        pageState.currIndex--;
       }
       return;
     }
@@ -95,41 +87,47 @@
     if (key === "Tab") {
       inserted = "→";
     }
-    const target = page[curr];
+    const target = page[pageState.currIndex];
     const isCorrect = matches(inserted, target);
 
-    if (curr < currLen) {
-      typed += inserted;
-      curr++;
+    if (pageState.currIndex < pageLength) {
+      pageState.typed += inserted;
+      pageState.currIndex++;
     }
 
     if (!isCorrect) {
-      misclicks++;
+      pageState.misclicks++;
     }
 
     if (isCorrect) {
-      const delta = gameState.time - lastTimestamp;
-      deltas.push(delta);
-      lastTimestamp = gameState.time;
+      const delta = gameState.time - pageState.lastTimestamp;
+      pageState.deltas = delta;
+      pageState.lastTimestamp = gameState.time;
     }
 
-    if (curr >= currLen && isCorrect) {
-      const acc = getAccuracy(typed, page);
-      const realAcc = 100 - (misclicks / page.length) * 100;
-
-      gameState.realAcc = realAcc > 0 ? realAcc : 0;
-      gameState.acc = acc;
-      lastTimestamp = gameState.time;
-      gameState.typed += page.length;
-      gameState.lastTime = gameState.time;
-
-      misclicks = 0;
-      typed = "";
-      curr = 0;
-      deltas = [];
-
+    if (pageState.currIndex >= pageLength && isCorrect) {
+      submitResults();
+      resetProgress();
       nextPage();
     }
+  }
+
+  function submitResults() {
+    const acc = getAccuracy(pageState.typed, page);
+    const realAcc = 100 - (pageState.misclicks / page.length) * 100;
+
+    gameState.realAcc = realAcc > 0 ? realAcc : 0;
+    gameState.acc = acc;
+    pageState.lastTimestamp = gameState.time;
+    gameState.typed += page.length;
+    gameState.lastTime = gameState.time;
+  }
+
+  function resetProgress() {
+    pageState.misclicks = 0;
+    pageState.typed = "";
+    pageState.currIndex = 0;
+    pageState.resetDeltas;
   }
 
   function replaceSpecialChars(input: string): string {
@@ -161,17 +159,17 @@
     const match = input === replaceSpecialChars(tar);
     return match;
   }
-  // $effect(() => {
-  //   if (!game) return;
-  //   if (gameState.mode === "I") {
-  //     game.setAttribute("tabindex", "-1");
-  //     game.focus();
-  //   }
-  //   if (gameState.mode === "N") {
-  //     game.setAttribute("tabindex", "0");
-  //     game.blur();
-  //   }
-  // });
+  $effect(() => {
+    if (!game) return;
+    if (gameState.mode === "I") {
+      game.setAttribute("tabindex", "-1");
+      game.focus();
+    }
+    if (gameState.mode === "N") {
+      game.setAttribute("tabindex", "0");
+      game.blur();
+    }
+  });
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -182,25 +180,25 @@
 >
   <div class="text-area">
     {#each page as letter, i}
-      {@const active = i === typed.length}
-      {@const correct = matches(typed[i], page[i])}
-      {@const attempted = typed.length > i}
+      {@const active = i === pageState.typed.length}
+      {@const correct = matches(pageState.typed[i], page[i])}
+      {@const attempted = pageState.typed.length > i}
       {@const wrong = attempted && !correct}
       <span class:correct class:wrong class:active>
         {#if !wrong}
           {#if letter === " "}
             &ensp;
           {:else if letter === "↪"}
-            <span class="cr spchar">↪</span><br />
+            <span class="cr spchar enter">↪</span><br />
           {:else if letter === "→"}
             <span class="tab spchar">→</span>
           {:else}
             {letter}
           {/if}
-        {:else if typed[i] === " "}
+        {:else if pageState.typed[i] === " "}
           ·
         {:else}
-          {typed[i]}&shy;
+          {pageState.typed[i]}&shy;
         {/if}
       </span>
     {/each}
@@ -231,6 +229,10 @@
     border-radius: 5px;
     padding-inline: 2px;
     margin-inline: 0.5ch;
+  }
+  .enter {
+    padding-top: 5px;
+    padding-bottom: -5px;
   }
   .text-zone.inserting .spchar {
     background: var(--surface4);

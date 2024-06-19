@@ -1,6 +1,7 @@
+import type { PageServerLoad } from "./$types";
+
 import { getChapters } from "$lib/server/book";
 import { bookIndex } from "$lib/data/books/index";
-import type { PageServerLoad } from "./$types";
 import { splitChapterInPages } from "$lib/utils/bookFuncs";
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
@@ -41,7 +42,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       slug: currentBook.path,
       chapters: chapters.map((c, i) => ({
         title: c.title,
-        slug: i + 1,
+        slug: String(i + 1),
         completedPages: 0,
         totalPages: splitChapterInPages(c.pages).length,
       })),

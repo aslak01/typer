@@ -1,10 +1,11 @@
 <script lang="ts">
-  let { data, book } = $props();
-  let { bookMeta, chapters } = data;
+  let { data } = $props();
+  let { bookMeta, chapters, book } = data;
   import { playerState } from "$lib/stores/playerState.svelte";
   import { onMount } from "svelte";
 
   onMount(() => {
+    if (!book) return;
     playerState.activeBook = book;
   });
 </script>
