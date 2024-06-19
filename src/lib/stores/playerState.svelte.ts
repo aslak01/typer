@@ -12,29 +12,43 @@ type Book = {
   chapsComplete: number;
 };
 
-import { localStore } from "./useLocalStorage.svelte";
-
 function createPlayerState() {
-  let activeBook = $state(localStore("activeBook", null));
-  let activeBooks = $state(localStore("activeBooks", []));
-  //let activeBook: Book | null = $state(activeBookLocal.value);
-  //let activeBooks: Book[] = $state([]);
   return {
     get activeBook(): Book | null {
-      return activeBook.value;
+      const item = localStorage.getItem("activeBook");
+      if (item) {
+        return deserialize(item);
+      }
+      return null;
     },
     set activeBook(b: Book) {
-      localStore("activeBook", b);
+      console.log("setting book", b);
+      localStorage.setItem("activeBook", serialize(b));
     },
     get activeBooks(): Book[] {
-      return activeBooks.value;
+      const books = localStorage.getItem("activeBooks");
+      if (books) {
+        return deserialize(books);
+      }
+      return [];
     },
     set activeBooks(b: Book) {
-      const curr = activeBooks.value;
-      const newArr = curr.push(b);
-      localStore("activeBooks", newArr);
+      const booksStr = localStorage.getItem("activeBooks");
+      if (booksStr) {
+        const books = deserialize(booksStr) as Book[];
+        books.push(b);
+        localStorage.setItem("activeBooks", serialize(books));
+      }
     },
   };
+}
+
+function serialize<T>(value: T): string {
+  return JSON.stringify(value);
+}
+
+function deserialize<T>(item: string): T {
+  return JSON.parse(item);
 }
 
 export const playerState = createPlayerState();

@@ -1,6 +1,6 @@
 <script lang="ts">
   let { data } = $props();
-  let { chapter, book } = data;
+  let { chapter } = data;
   let pages = chapter?.pages || [];
 
   // import { localStore } from "$lib/stores/useLocalStorage.svelte";
@@ -11,7 +11,6 @@
   import Game from "./game/Game.svelte";
   import PadderParser from "./game/PadderParser.svelte";
   import StatusBar from "./game/StatusBar.svelte";
-  import { browser } from "$app/environment";
 
   let page = $derived.by(() => {
     if (!chapter) return "";
