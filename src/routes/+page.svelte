@@ -5,17 +5,30 @@
   // import { tick } from "svelte";
 
   // let isVisible = false;
+  import { playerState } from "$lib/stores/playerState.svelte";
 </script>
 
-<a href="/typer">Type</a>
+<div class="splash">
+  <h1>Books</h1>
+  <a href="/typer">Type</a>
+
+  {#if playerState.activeBook}
+    <h2>Active book</h2>
+    <div>
+      <a href="typer/{playerState.activeBook.slug}"
+        >{playerState.activeBook.title}</a
+      >
+    </div>
+  {/if}
+</div>
 
 <style>
-  /* :global(body) { */
-  /*   overflow: hidden; */
-  /* } */
-
-  /* div { */
-  /*   display: flex; */
-  /*   justify-content: center; */
-  /* } */
+  .splash {
+    padding-inline: 2ch;
+  }
+  h1,
+  h2 {
+    font-size: var(--font-normal);
+    padding-block-start: 3ch;
+  }
 </style>

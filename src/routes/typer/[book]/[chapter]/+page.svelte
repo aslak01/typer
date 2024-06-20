@@ -28,11 +28,6 @@
     if (!nextPage) return "";
     return nextPage;
   });
-
-  // $effect(() => {
-  //   console.log("hei");
-  //   //localStore("activeBook", book);
-  // });
 </script>
 
 <div class="game-container">
