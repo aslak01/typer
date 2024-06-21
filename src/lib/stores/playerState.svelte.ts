@@ -40,6 +40,12 @@ function createPlayerState() {
         localStorage.setItem("activeBooks", serialize(books));
       }
     },
+    get activeChapters(): Book[] {
+      return [];
+    },
+    set activeChapters(c: Book) {
+      //
+    },
   };
 }
 

@@ -3,6 +3,7 @@
   let { bookMeta, chapters, book } = data;
   import { playerState } from "$lib/stores/playerState.svelte";
   import { onMount } from "svelte";
+  console.log(book);
 
   onMount(() => {
     if (!book) return;
