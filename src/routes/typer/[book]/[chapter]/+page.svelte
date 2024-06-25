@@ -3,6 +3,9 @@
   let { chapter } = data;
   let pages = chapter?.pages || [];
 
+  import { playerState } from "$lib/stores/playerState.svelte";
+  import { onMount } from "svelte";
+
   // import { localStore } from "$lib/stores/useLocalStorage.svelte";
   import { gameState } from "$lib/stores/gameState.svelte";
   import { createChapterState } from "$lib/stores/chapterState.svelte";
@@ -28,6 +31,10 @@
     if (!nextPage) return "";
     return nextPage;
   });
+  onMount(()=> {
+    playerState.activeBooks = playerState.activeBook
+
+  })
 </script>
 
 <div class="game-container">
