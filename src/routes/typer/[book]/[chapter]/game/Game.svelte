@@ -198,7 +198,7 @@
         {:else if pageState.typed[i] === " "}
           ·
         {:else}
-          {pageState.typed[i]}&shy;
+          {pageState.typed[i]}
         {/if}
       </span>
     {/each}
@@ -245,7 +245,9 @@
     color: var(--surface3);
   }
   .tab {
-    padding-inline: 0.5ch;
+    margin: 0;
+    margin-inline-end: 0.5ch;
+    padding-inline: 1ch;
   }
   .correct {
     color: var(--text-faded);
@@ -255,6 +257,8 @@
     text-decoration-line: underline;
     text-decoration-style: solid;
     text-decoration-color: var(--red-5);
+    hyphens: auto;
+    -webkit-hyphens: auto;
   }
   .inserting .active {
     position: relative;

@@ -22,7 +22,33 @@ function createGameState() {
       realAccArr.reduce((acc, curr) => acc + curr, 0) / accuracyArr.length;
     return !acc || isNaN(acc) ? "-" : acc.toFixed(0);
   });
+
+  let chapPage = $state(0)
+  let chapLen = $state(0)
+
+  function nextPage() {
+    if (chapPage + 1 <= chapLen) {
+      chapPage++;
+    }
+  }
+  function prevPage() {
+    if (chapPage - 1 >= 0) {
+      chapPage--;
+    }
+  }
+  function createChapterState(chapLength: number) {
+    chapLen = chapLength
+  }
+
   return {
+    get currPage() {
+      return chapPage;
+    },
+    get currLen() {
+      return chapLen
+    },
+    nextPage,
+    prevPage,
     get mode() {
       return mode;
     },
@@ -62,6 +88,7 @@ function createGameState() {
     get realAcc(): number | string {
       return realAcc;
     },
+    createChapterState
   };
 }
 
