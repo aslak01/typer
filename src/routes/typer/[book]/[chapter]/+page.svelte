@@ -54,9 +54,9 @@
 <style>
   .text-container {
     display: grid;
-    gap: 0.5rem;
+    gap: 0.2lh;
     grid-template-columns: 1fr;
-    grid-template-rows: 28% 1fr 28%;
+    grid-template-rows: 30% 40% 30%;
     /*grid-auto-rows: 1fr;*/
     max-inline-size: var(--size-content-3);
     max-height: 90%;

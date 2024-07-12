@@ -216,6 +216,8 @@
 <style>
   .text-zone {
     display: flex;
+    height: 100%;
+    align-items: center;
   }
   .text-area {
     z-index: 10;
