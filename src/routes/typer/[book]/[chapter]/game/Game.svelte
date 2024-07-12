@@ -2,13 +2,16 @@
   let {
     page,
     nextPage,
+    totalPages,
   }: {
     page: string;
     nextPage: () => void;
+    totalPages: number;
   } = $props();
 
   import { gameState } from "$lib/stores/gameState.svelte";
   import { createPageState } from "$lib/stores/pageState.svelte";
+  import { onDestroy, onMount } from "svelte";
 
   let pageLength = $derived(page.length);
   let pageState = createPageState(page);
@@ -170,6 +173,11 @@
       game.blur();
     }
   });
+  onMount(() => {
+    gameState.createChapterState(totalPages);
+    gameState.playing = true;
+  });
+  onDestroy(() => (gameState.playing = false));
 </script>
 
 <svelte:window on:keydown={handleKeydown} />

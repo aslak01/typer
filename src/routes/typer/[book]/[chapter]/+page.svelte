@@ -9,7 +9,6 @@
   // import { localStore } from "$lib/stores/useLocalStorage.svelte";
   import { gameState } from "$lib/stores/gameState.svelte";
   // import { createChapterState } from "$lib/stores/chapterState.svelte";
-  let chapterState = $state(gameState.createChapterState(pages.length));
 
   import Game from "./game/Game.svelte";
   import PadderParser from "./game/PadderParser.svelte";
@@ -44,7 +43,7 @@
     </div>
 
     <div class="section-wrapper">
-      <Game {page} nextPage={gameState.nextPage} />
+      <Game {page} nextPage={gameState.nextPage} totalPages={pages.length} />
     </div>
     <div class="section-wrapper">
       <PadderParser text={nextPage} fade={false} pos="bottom" />

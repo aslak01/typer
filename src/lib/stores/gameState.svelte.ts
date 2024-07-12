@@ -1,4 +1,5 @@
 function createGameState() {
+  let playing = $state(false)
   let time = $state(0);
   let mode = $state("N");
   // typed length in chars
@@ -54,6 +55,13 @@ function createGameState() {
     },
     set mode(m: string) {
       mode = m;
+    },
+
+    get playing() {
+      return playing;
+    },
+    set playing(p: boolean) {
+      playing = p;
     },
     get time() {
       return time;

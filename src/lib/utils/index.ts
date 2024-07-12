@@ -2,7 +2,7 @@ const lastIndexOfSymbols = (symbols: string[]) => (str: string) => {
   return (
     str
       .split("")
-      .map((letter, index) => (symbols.includes(letter) ? index : -1))
+      .map((symbol, index) => (symbols.includes(symbol) ? index : -1))
       .filter((index) => index !== -1)
       .pop() || -1
   );
@@ -12,14 +12,13 @@ const lastIndexOfSeparator = lastIndexOfSymbols([
   ".",
   ",",
   ")",
-  "\n",
   "—",
   ":",
   ";",
 ]);
 
 export function sliceAtNearestSpace(str: string) {
-  const threshold = 200;
+  const threshold = 150;
   const lastSpaceIndex = str.lastIndexOf(" ");
   const lastSeparatorIndex = lastIndexOfSeparator(str);
   const lastLinebreakIndex = str.lastIndexOf("↪");
@@ -29,7 +28,7 @@ export function sliceAtNearestSpace(str: string) {
     return str;
   }
 
-  if (lastLinebreakIndex !== -1) {
+  if (lastLinebreakIndex !== -1 && lastLinebreakIndex > threshold) {
     return str.slice(0, lastLinebreakIndex + 1);
   }
 
