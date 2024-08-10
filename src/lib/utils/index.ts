@@ -8,14 +8,7 @@ const lastIndexOfSymbols = (symbols: string[]) => (str: string) => {
   );
 };
 
-const lastIndexOfSeparator = lastIndexOfSymbols([
-  ".",
-  ",",
-  ")",
-  "—",
-  ":",
-  ";",
-]);
+const lastIndexOfSeparator = lastIndexOfSymbols([".", ",", ")", "—", ":", ";"]);
 
 export function sliceAtNearestSpace(str: string) {
   const threshold = 150;

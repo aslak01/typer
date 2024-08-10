@@ -40,6 +40,7 @@ function createPlayerState() {
     set activeBooks(b: Book) {
       if (!browser) return;
       const booksStr = localStorage.getItem("activeBooks");
+      if (!booksStr) return;
       const books = (deserialize(booksStr) || []) as Book[];
       console.log("books", books);
       const bookSlugs = books.map((b) => b.slug);

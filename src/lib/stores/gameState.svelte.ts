@@ -1,5 +1,5 @@
 function createGameState() {
-  let playing = $state(false)
+  let playing = $state(false);
   let time = $state(0);
   let mode = $state("N");
   // typed length in chars
@@ -24,8 +24,8 @@ function createGameState() {
     return !acc || isNaN(acc) ? "-" : acc.toFixed(0);
   });
 
-  let chapPage = $state(0)
-  let chapLen = $state(0)
+  let chapPage = $state(0);
+  let chapLen = $state(0);
 
   function nextPage() {
     if (chapPage + 1 <= chapLen) {
@@ -38,7 +38,7 @@ function createGameState() {
     }
   }
   function createChapterState(chapLength: number) {
-    chapLen = chapLength
+    chapLen = chapLength;
   }
 
   return {
@@ -46,7 +46,7 @@ function createGameState() {
       return chapPage;
     },
     get currLen() {
-      return chapLen
+      return chapLen;
     },
     nextPage,
     prevPage,
@@ -96,7 +96,7 @@ function createGameState() {
     get realAcc(): number | string {
       return realAcc;
     },
-    createChapterState
+    createChapterState,
   };
 }
 
