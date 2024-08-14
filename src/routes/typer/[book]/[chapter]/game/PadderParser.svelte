@@ -30,7 +30,7 @@
     height: 100%;
     width: 100%;
     padding-inline: 1ch;
-    position: relative;
+    position: absolute;
   }
   p.p {
     font-size: var(--font-size-4);

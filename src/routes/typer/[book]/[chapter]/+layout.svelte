@@ -10,10 +10,10 @@
 <style>
   .game-container {
     height: calc(100% - var(--header-height));
-    padding: 1rem;
     font-size: var(--font-size-4);
     letter-spacing: var(--font-letterspacing-2);
     line-height: var(--font-lineheight-4);
     font-weight: var(--font-weight-5);
+    border: 5px solid orange;
   }
 </style>

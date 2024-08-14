@@ -59,14 +59,15 @@
     grid-template-rows: 30% 40% 30%;
     /*grid-auto-rows: 1fr;*/
     max-inline-size: var(--size-content-3);
-    max-height: 90%;
-    height: 90%;
+    height: 100%;
     overflow: hidden;
     margin: 0 auto;
   }
+
   .section-wrapper {
     display: flex;
     align-items: center;
     position: relative;
+    border: 5px solid white;
   }
 </style>
