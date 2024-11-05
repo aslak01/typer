@@ -6,18 +6,17 @@
 
   // let isVisible = false;
   import { playerState } from "$lib/stores/playerState.svelte";
+  const { activeBook } = playerState;
 </script>
 
 <div class="splash">
   <h1>Books</h1>
   <a href="/typer">Type</a>
 
-  {#if playerState.activeBook}
+  {#if activeBook}
     <h2>Active book</h2>
     <div>
-      <a href="typer/{playerState.activeBook.slug}"
-        >{playerState.activeBook.title}</a
-      >
+      <a href="typer/{activeBook.slug}">{activeBook.title}</a>
     </div>
   {/if}
 </div>

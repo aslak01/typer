@@ -14,47 +14,100 @@ type Book = {
   chapsComplete: number;
 };
 
+type PlayerState = {
+  activeBook: Book | null;
+  activeBooks: Book[];
+  activeChapters: Book[];
+};
+
 function createPlayerState() {
+  let state: PlayerState = {
+    activeBook: null,
+    activeBooks: [],
+    activeChapters: [],
+  };
+
+  if (browser) {
+    const storedActiveBook = localStorage.getItem("activeBook");
+    const storedActiveBooks = localStorage.getItem("activeBooks");
+    const storedActiveChapters = localStorage.getItem("activeChapters");
+
+    if (storedActiveBook) {
+      state.activeBook = deserialize<Book>(storedActiveBook);
+    }
+    if (storedActiveBooks) {
+      state.activeBooks = deserialize<Book[]>(storedActiveBooks);
+    }
+    if (storedActiveChapters) {
+      state.activeChapters = deserialize<Book[]>(storedActiveChapters);
+    }
+  }
+
   return {
     get activeBook(): Book | null {
-      if (!browser) return null;
-      const item = localStorage.getItem("activeBook");
-      if (item) {
-        return deserialize(item);
-      }
-      return null;
+      return state.activeBook;
     },
-    set activeBook(b: Book) {
+    set activeBook(book: Book | null) {
       if (!browser) return;
-      console.log("setting book", b);
-      localStorage.setItem("activeBook", serialize(b));
-    },
-    get activeBooks(): Book[] | [] {
-      if (!browser) return [];
-      const books = localStorage.getItem("activeBooks");
-      if (books) {
-        return deserialize(books);
+      state.activeBook = book;
+      if (book) {
+        localStorage.setItem("activeBook", serialize(book));
+      } else {
+        localStorage.removeItem("activeBook");
       }
-      return [];
     },
-    set activeBooks(b: Book) {
+
+    get activeBooks(): Book[] {
+      return state.activeBooks;
+    },
+    set activeBooks(book: Book) {
       if (!browser) return;
-      const booksStr = localStorage.getItem("activeBooks");
-      if (!booksStr) return;
-      const books = (deserialize(booksStr) || []) as Book[];
-      console.log("books", books);
-      const bookSlugs = books.map((b) => b.slug);
-      if (bookSlugs.includes(b.slug)) {
-        return;
+      const existingBook = state.activeBooks.find((b) => b.slug === book.slug);
+      if (!existingBook) {
+        state.activeBooks = [...state.activeBooks, book];
+        localStorage.setItem("activeBooks", serialize(state.activeBooks));
       }
-      books.push(b);
-      localStorage.setItem("activeBooks", serialize(books));
     },
+
     get activeChapters(): Book[] {
-      return [];
+      return state.activeChapters;
     },
-    set activeChapters(c: Book) {
-      //
+    set activeChapters(chapters: Book) {
+      if (!browser) return;
+      state.activeChapters = Array.isArray(chapters) ? chapters : [chapters];
+      localStorage.setItem("activeChapters", serialize(state.activeChapters));
+    },
+
+    // Helper methods
+    clearState() {
+      if (!browser) return;
+      state = {
+        activeBook: null,
+        activeBooks: [],
+        activeChapters: [],
+      };
+      localStorage.removeItem("activeBook");
+      localStorage.removeItem("activeBooks");
+      localStorage.removeItem("activeChapters");
+    },
+
+    updateBookProgress(
+      bookSlug: string,
+      chapterSlug: string,
+      completedPages: number,
+    ) {
+      if (!browser) return;
+      const book = state.activeBooks.find((b) => b.slug === bookSlug);
+      if (book) {
+        const chapter = book.chapters.find((c) => c.slug === chapterSlug);
+        if (chapter) {
+          chapter.completedPages = completedPages;
+          book.chapsComplete = book.chapters.filter(
+            (c) => c.completedPages === c.totalPages,
+          ).length;
+          this.activeBooks = book; // This will update localStorage
+        }
+      }
     },
   };
 }
@@ -64,7 +117,12 @@ function serialize<T>(value: T): string {
 }
 
 function deserialize<T>(item: string): T {
-  return JSON.parse(item);
+  try {
+    return JSON.parse(item);
+  } catch (e) {
+    console.error("Failed to deserialize:", e);
+    return {} as T;
+  }
 }
 
 export const playerState = createPlayerState();

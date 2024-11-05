@@ -12,6 +12,7 @@
   import { gameState } from "$lib/stores/gameState.svelte";
   import { createPageState } from "$lib/stores/pageState.svelte";
   import { onDestroy, onMount } from "svelte";
+  import { parseInsert } from "./parse-keydown.svelte";
 
   let pageLength = $derived(page.length);
   let pageState = createPageState(page);
@@ -29,67 +30,15 @@
     }
   }
 
-  function isInput(inp: string): boolean {
-    return (
-      inp.length === 1 ||
-      inp === "Enter" ||
-      inp === "Tab" ||
-      inp === "Backspace"
-    );
-  }
-
-  function isInsert(m: string) {
-    return m.toLowerCase() === "i";
-  }
-
   function handleKeydown(e: KeyboardEvent) {
-    const { key } = e;
+    const { key, isTyping } = parseInsert(e, gameState, pageState);
 
-    const isInsertMode = isInsert(gameState.mode);
+    setTypingStatus(isTyping);
 
-    if (!isInsertMode) {
-      if (isInsert(key)) {
-        gameState.mode = "I";
-        setTypingStatus(true);
-        return;
-      }
-    }
-
-    if (isInsertMode) {
-      if (key === "Escape") {
-        gameState.mode = "N";
-        setTypingStatus(false);
-        return;
-      }
-      if (key === "Tab") {
-        // tab is an input so prevent it behaving
-        // as a window controller
-        e.preventDefault();
-      }
-    }
-
-    const keyIsInput = isInput(key);
-
-    if (!keyIsInput || !isInsertMode) {
-      return;
-    }
-
-    if (key === "Backspace") {
-      if (pageState.typed.length > 0) {
-        pageState.typed = pageState.typed.slice(0, -1);
-        pageState.currIndex--;
-      }
-      return;
-    }
+    if (key === null) return;
 
     let inserted = key;
 
-    if (key === "Enter") {
-      inserted = "↪";
-    }
-    if (key === "Tab") {
-      inserted = "→";
-    }
     const target = page[pageState.currIndex];
     const isCorrect = matches(inserted, target);
 
